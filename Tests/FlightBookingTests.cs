@@ -224,19 +224,6 @@ namespace TesterBudAutomationFramework.Tests
             });
         }
 
-        //[Test]
-        //public void Payment_EmptyCardNumber_ShowsPopUp()
-        //{
-        //    var search = new FlightSearchService(Driver, Wait, BaseUrl);
-        //    var results = search.SearchOneWay("NYC", "LAX", DateTime.Today.AddDays(7));
-        //    var booking = results.SelectFirstFlight();
-
-        //    var payment = booking.FillPassenger("John", "Doe", "AB1234567").ContinueToPayment();
-        //    payment.EnterCard("4111111111111110", "10/30", "123").SubmitExpectingStayOnPage();
-
-        //    Assert.IsTrue(payment.IsDeclined(), "");
-        //}
-
         [TearDown]
         public void TearDown()
         {
