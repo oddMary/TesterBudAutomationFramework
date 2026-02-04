@@ -1,0 +1,27 @@
+﻿using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
+
+namespace TesterBudAutomationFramework.Core.Drivers
+{
+    internal class WebDriverFactory
+    {
+        public static IWebDriver CreateWebDriver(string browser, int timeout)
+        {
+            switch (browser)
+            {
+                case "chrome":
+                    return CreateChromeDriver(timeout);
+                default:
+                    return CreateChromeDriver(timeout);
+            }
+        }
+
+        private static IWebDriver CreateChromeDriver(int timeout)
+        {
+            var options = new ChromeOptions();
+            var driver = new ChromeDriver(options);
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(timeout);
+            return driver;
+        }
+    }
+}
