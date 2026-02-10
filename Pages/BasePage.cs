@@ -16,26 +16,17 @@ namespace TesterBudAutomationFramework.Pages
             _driver = driver;
         }
 
-        protected T FindComponent<T>(By by) where T : BaseControl
+        protected T FindComponent<T>(By locator) where T : BaseControl
         {
-            if (typeof(T) == typeof(Button))
-                return new Button(_driver, by, TestConfig.CurrentSetting.TimeoutSec) as T;
-
-            if (typeof(T) == typeof(Checkbox))
-                return new Checkbox(_driver, by, TestConfig.CurrentSetting.TimeoutSec) as T;
-
-            if (typeof(T) == typeof(Select))
-                return new Select(_driver, by, TestConfig.CurrentSetting.TimeoutSec) as T;
-
-            if (typeof(T) == typeof(Link))
-                return new Link(_driver, by, TestConfig.CurrentSetting.TimeoutSec) as T;
-
-            if (typeof(T) == typeof(TextInput))
-                return new TextInput(_driver, by, TestConfig.CurrentSetting.TimeoutSec) as T;
-
-            throw new NotImplementedException($"Component type {typeof(T).Name} not supported");
+            return (T)Activator.CreateInstance(typeof(T), _driver, locator, TestConfig.CurrentSetting.TimeoutSec);
         }
 
+        protected List<T> FindComponents<T>(By locator) where T : BaseControl
+        {
+            return _driver.FindElements(locator)
+                .Select(item => (T)Activator.CreateInstance(typeof(T), _driver, locator, TestConfig.CurrentSetting.TimeoutSec))
+                .ToList();
+        }
 
         public void OpenAutomationTestingPracticeHubPage() => 
             _driver.Navigate().GoToUrl(TestConfig.CurrentSetting.BaseUrl);
@@ -43,8 +34,8 @@ namespace TesterBudAutomationFramework.Pages
         public FlightBookingPage GoToFlightBookingPage()
         {
             OpenAutomationTestingPracticeHubPage();
-            FlightBookingPage.Click();
+            FlightBookingPage.ScrollToCenterAndClick();
             return new FlightBookingPage(_driver);
         }
     }
-}
+};

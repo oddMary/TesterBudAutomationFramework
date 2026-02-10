@@ -5,10 +5,10 @@ using System.Text;
 
 namespace TesterBudAutomationFramework.Core.Controls
 {
-    internal class Link : BaseControl
+    public class Link : BaseControl
     {
         public Link(IWebDriver driver, By locator, int timeout) 
             : base(driver, locator, timeout) { }
 
     }
-}
+};

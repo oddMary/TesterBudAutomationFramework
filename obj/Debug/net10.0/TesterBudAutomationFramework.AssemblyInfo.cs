@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("TesterBudAutomationFramework")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3ee64da0b200932f6ae9f2f128451ae755d3a2a1")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+84b192a506e559183d1ec1a16ed1f48b8f44cae3")]
 [assembly: System.Reflection.AssemblyProductAttribute("TesterBudAutomationFramework")]
 [assembly: System.Reflection.AssemblyTitleAttribute("TesterBudAutomationFramework")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

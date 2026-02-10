@@ -14,7 +14,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace TesterBudAutomationFramework.Services
 {
-    internal class FlightBookingService
+    public class FlightBookingService
     {
         IWebDriver _driver;
         FlightBookingPage _flightBookingPage;
@@ -23,6 +23,7 @@ namespace TesterBudAutomationFramework.Services
         {
             _driver = driver;
             _flightBookingPage = new FlightBookingPage(driver);
+            _flightBookingPage.GoToFlightBookingPage();
         }
 
         public FlightBookingPage SearchOneWay(string from, string to, DateTime date)
@@ -37,19 +38,11 @@ namespace TesterBudAutomationFramework.Services
             return _flightBookingPage.SearchFlights();
         }
 
-        public bool HasFlights(FlightBookingPage flightPage)
-        {
-            var awailableFlightsList = flightPage.GetListOfAwailableFlights();
-            if (awailableFlightsList != null && awailableFlightsList.Any()) return true;
-            return false;
-        }
+        public bool HasFlights(FlightBookingPage flightPage) =>
+            flightPage.GetListOfAwailableFlights()?.Any() == true;
 
-        public bool ShowsNoFlightsMessage(FlightBookingPage flightPage)
-        {
-            var awailableFlightsList = flightPage.GetNoFlightsMessage();
-            if (awailableFlightsList != null && awailableFlightsList.Any()) return false;
-            return true;
-        }
+        public bool NoFlightsMessageNotShown(FlightBookingPage flightPage) => 
+            flightPage.GetNoFlightsMessage()?.Any() == true;
 
         public FlightBookingPage SearchRoundWay(string from, string to, DateTime date, DateTime returnDate)
         {
@@ -81,22 +74,32 @@ namespace TesterBudAutomationFramework.Services
             return flightsInfo.All(f => f.Text.Contains(city));
         }
 
-        public bool AllFlightsMatchDate(DateTime date)
+        public bool DepartureFlightDateMatch(DateTime date)
         {
-            var flightsDateInfo = _flightBookingPage.GetFlightsDateTextInfo();
+            var flightsDateInfo = _flightBookingPage.GetDepartureFlightsDateTextInfo();
+            return AllFlightsMatchDate(flightsDateInfo, date);
+        }
+
+        public bool ReturnFlightDateMatch(DateTime date)
+        {
+            var flightsDateInfo = _flightBookingPage.GetReturnFlightsDateTextInfo();
+            return AllFlightsMatchDate(flightsDateInfo, date);
+        }
+
+        public bool AllFlightsMatchDate(List<Label> flightsDateInfo, DateTime date)
+        {
             if (flightsDateInfo.Count == 0) return false;
 
             var d = date.Day;   
             var m = date.Month;  
             var y = date.Year;
 
-            var pattern = $@"\b0?{d}/0?{m}/{y}\b";
+            var pattern = $@"\b0?{m}/0?{d}/{y}\b";
             var regex = new Regex(pattern);
 
-            var t = flightsDateInfo.Any(f => regex.IsMatch(f.Text));
-            if (flightsDateInfo.Count > 2)
+            foreach(var ttt in flightsDateInfo)
             {
-                TestContext.Progress.WriteLine(string.Join(", ", flightsDateInfo[2].Text));
+                var rrr = ttt.Text;
             }
 
             return flightsDateInfo.Any(f => regex.IsMatch(f.Text));
@@ -118,22 +121,22 @@ namespace TesterBudAutomationFramework.Services
 
         public bool IsBookingSuccessfulMessagePresented(FlightBookingPage flightPage)
         {
-            return flightPage.GetBookingSuccessfulMessage().Any();
+            return flightPage.GetBookingSuccessfulMessage()?.Any() == true;
         }
 
         public bool ShowsOriginRequired(FlightBookingPage flight)
         {
-            return flight.GetOriginRequiredErrorMessage().Any();
+            return flight.GetOriginRequiredErrorMessage()?.Any() == true;
         }
 
         public bool ShowsDestinationRequired(FlightBookingPage flight)
         {
-            return flight.GetDestinationRequiredErrorMessage().Any();
+            return flight.GetDestinationRequiredErrorMessage()?.Any() == true;
         }
 
         public bool ShowsDepartureDateRequired(FlightBookingPage flight)
         {
-            return flight.GetDepartureDateRequiredErrorMessage().Any();
+            return flight.GetDepartureDateRequiredErrorMessage()?.Any() == true;
         }
 
         public bool ShowsReturnDateRequired(FlightBookingPage flight)
@@ -143,22 +146,22 @@ namespace TesterBudAutomationFramework.Services
 
         public string GetOriginRequiredErrorMessage(FlightBookingPage flightPage)
         {
-            return flightPage.GetOriginRequiredErrorMessage().FirstOrDefault().Text;
+            return flightPage.GetOriginRequiredErrorMessage();
         }
 
         public string GetDestinationRequiredErrorMessage(FlightBookingPage flightPage)
         {
-            return flightPage.GetDestinationRequiredErrorMessage().FirstOrDefault().Text;
+            return flightPage.GetDestinationRequiredErrorMessage();
         }
 
         public string GetDepartureRequiredErrorMessage(FlightBookingPage flightPage)
         {
-            return flightPage.GetDepartureDateRequiredErrorMessage().FirstOrDefault().Text;
+            return flightPage.GetDepartureDateRequiredErrorMessage();
         }
 
         public string GetReturnRequiredErrorMessage(FlightBookingPage flightPage)
         {
-            return flightPage.GetReturnDateRequiredErrorMessage().FirstOrDefault().Text;
+            return flightPage.GetReturnDateRequiredErrorMessage();
         }
 
         public FlightBookingPage SearchOneWayWithoutOriginCity(string to, DateTime date)
@@ -205,4 +208,4 @@ namespace TesterBudAutomationFramework.Services
             return _flightBookingPage.SearchFlights();
         }
     }
-}
+};

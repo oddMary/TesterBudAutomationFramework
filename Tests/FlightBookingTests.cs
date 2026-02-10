@@ -1,10 +1,12 @@
 ﻿using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
+using Shouldly;
 using System.Buffers.Text;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using TesterBudAutomationFramework.Core.Config;
+using TesterBudAutomationFramework.Core.Constants;
 using TesterBudAutomationFramework.Core.Controls;
 using TesterBudAutomationFramework.Core.Drivers;
 using TesterBudAutomationFramework.Core.Waits;
@@ -15,15 +17,11 @@ namespace TesterBudAutomationFramework.Tests
 {
     [TestFixture]
     [Category("UI")]
-    internal class FlightBookingTests
+    public class FlightBookingTests
     {
         private IWebDriver _driver;
-        private FlightBookingPage _flightPage;
         private FlightBookingService _flightService;
         private PaymentModalService _paymentService;
-
-        private const string DefaultFrom = "New York";
-        private const string DefaultTo = "London";
 
         private DateTime _departureDate;
         private DateTime _returnDate;
@@ -33,7 +31,6 @@ namespace TesterBudAutomationFramework.Tests
         {
             var config = TestConfig.CurrentSetting;
             _driver = WebDriverFactory.CreateWebDriver(config.Browser, config.PageLoadSec);
-            _flightPage = new FlightBookingPage(_driver).GoToFlightBookingPage();
             _flightService = new FlightBookingService(_driver);
             _paymentService = new PaymentModalService(_driver);
             _departureDate = DateTime.Today.AddDays(7);
@@ -43,48 +40,37 @@ namespace TesterBudAutomationFramework.Tests
         [Test]
         public void N01_Search_OneWay_MinimalRequiredData_DisplaysAvailableFlights()
         {
-            var results = _flightService.SearchOneWay(DefaultFrom, DefaultTo, _departureDate);
+            var results = _flightService.SearchOneWay(TestConstants.DEFAULT_FROM, TestConstants.DEFAULT_TO, _departureDate);
 
-            // Assert
-            Assert.Multiple(() =>
-            {
-                Assert.That(_flightService.HasFlights(results), "Expected available flights, but none were found.");
-                Assert.That(_flightService.ShowsNoFlightsMessage(results), Is.False, "Unexpected 'No flights found' message.");
-
-                Assert.That(_flightService.AllFlightsMatchRoute(DefaultFrom), "From city do not match.");
-                Assert.That(_flightService.AllFlightsMatchRoute(DefaultTo), "To city do not match.");
-                Assert.That(_flightService.AllFlightsMatchDate(_departureDate), "Departure date do not match.");
-            });
+            //Assert
+            _flightService.HasFlights(results).ShouldBeTrue("Expected available flights, but none were found.");
+            _flightService.NoFlightsMessageNotShown(results).ShouldBeTrue("Unexpected 'No flights found' message.");
+            _flightService.AllFlightsMatchRoute(TestConstants.DEFAULT_FROM).ShouldBeTrue("From city do not match.");
+            _flightService.AllFlightsMatchRoute(TestConstants.DEFAULT_TO).ShouldBeTrue("To city do not match.");
+            _flightService.DepartureFlightDateMatch(_departureDate).ShouldBeTrue("Departure date do not match.");
         }
 
         [Test]
         public void N02_Search_RoundTrip_WithValidDates_DisplaysMatchingFlights()
         {
-            var results = _flightService.SearchRoundWay(DefaultFrom, DefaultTo, _departureDate, _returnDate);
+            var results = _flightService.SearchRoundWay(TestConstants.DEFAULT_FROM, TestConstants.DEFAULT_TO, _departureDate, _returnDate);
 
-            // Assert
-            Assert.Multiple(() =>
-            {
-                Assert.That(_flightService.HasFlights(results), "Expected flights for round trip.");
-                Assert.That(_flightService.ShowsNoFlightsMessage(results), Is.False, "Unexpected 'No flights found'.");
-
-                Assert.That(_flightService.AllFlightsMatchRoute(DefaultFrom), "From city do not match.");
-                Assert.That(_flightService.AllFlightsMatchRoute(DefaultTo), "To city do not match.");
-                Assert.That(_flightService.AllFlightsMatchDate(_departureDate), "Departure date do not match.");
-                Assert.That(_flightService.AllFlightsMatchDate(_returnDate), "Return date do not match.");
-            });
+            _flightService.HasFlights(results).ShouldBeTrue("Expected available flights, but none were found.");
+            _flightService.NoFlightsMessageNotShown(results).ShouldBeTrue("Unexpected 'No flights found' message.");
+            _flightService.AllFlightsMatchRoute(TestConstants.DEFAULT_FROM).ShouldBeTrue("From city do not match.");
+            _flightService.AllFlightsMatchRoute(TestConstants.DEFAULT_TO).ShouldBeTrue("To city do not match.");
+            _flightService.DepartureFlightDateMatch(_departureDate).ShouldBeTrue("Departure date do not match.");
+            _flightService.ReturnFlightDateMatch(_returnDate).ShouldBeTrue("Return date do not match.");
         }
 
         [Test]
         public void N03_Search_SinglePassenger_DefaultAdult_DisplaysFlights()
         {
-            // Arrange
             var adults = 1;
 
-            var results = _flightService.SearchWithPassengers(DefaultFrom, DefaultTo, _departureDate, adults);
+            var results = _flightService.SearchWithPassengers(TestConstants.DEFAULT_FROM, TestConstants.DEFAULT_TO, _departureDate, adults);
 
-            // Assert
-            Assert.That(_flightService.HasFlights(results), "Expected flights for 1 adult.");
+            _flightService.HasFlights(results).ShouldBeTrue("Expected flights for 1 adult.");
         }
 
 
@@ -93,29 +79,29 @@ namespace TesterBudAutomationFramework.Tests
         {
             var adults = 3;
 
-            var results = _flightService.SearchWithPassengers(DefaultFrom, DefaultTo, _departureDate, adults);
+            var results = _flightService.SearchWithPassengers(TestConstants.DEFAULT_FROM, TestConstants.DEFAULT_TO, _departureDate, adults);
 
-            Assert.That(_flightService.HasFlights(results), "Expected flights for 3 passengers.");
+            _flightService.HasFlights(results).ShouldBeTrue("Expected flights for 3 passengers.");
         }
 
         [Test]
         public void N05_SelectFlight_FromSearchResults_ShowsPaymentModal()
         {
-            var results = _flightService.SearchOneWay(DefaultFrom, DefaultTo, _departureDate);
+            var results = _flightService.SearchOneWay(TestConstants.DEFAULT_FROM, TestConstants.DEFAULT_TO, _departureDate);
             var paymentModal = _flightService.SelectFirstFlight(results);
 
-            Assert.That(_paymentService.IsPaymentModalPresented(paymentModal), Is.True, "Payment modal is not opened.");
+            _paymentService.IsPaymentModalPresented(paymentModal).ShouldBeTrue("Payment modal is not opened.");
         }
 
         [Test]
         public void N06_Booking_WithValidPassengerAndPaymentData_Succeeds()
         {
-            var results = _flightService.SearchOneWay(DefaultFrom, DefaultTo, _departureDate);
+            var results = _flightService.SearchOneWay(TestConstants.DEFAULT_FROM, TestConstants.DEFAULT_TO, _departureDate);
             var paymentModal = _flightService.SelectFirstFlight(results);
             var completed = _paymentService
                 .CompleteBookingWithValidData(paymentModal, "4242424242424242", "12/30", "123");
 
-            Assert.That(_flightService.IsBookingSuccessfulMessagePresented(completed), Is.True, "Booking confirmation ID not found.");
+            _flightService.IsBookingSuccessfulMessagePresented(completed).ShouldBeTrue("Booking confirmation ID not found.");
         }
 
         //// ---------- Negative ----------
@@ -123,105 +109,83 @@ namespace TesterBudAutomationFramework.Tests
         [Test]
         public void N07_Search_EmptyOrigin_ShowsRequiredFieldError()
         {
-            var results = _flightService.SearchOneWayWithoutOriginCity(DefaultTo, _departureDate);
+            var results = _flightService.SearchOneWayWithoutOriginCity(TestConstants.DEFAULT_TO, _departureDate);
 
-            Assert.Multiple(() =>
-            {
-                Assert.That(_flightService.ShowsOriginRequired(results), Is.True, "Expected origin required error.");
-                Assert.That(_flightService.GetOriginRequiredErrorMessage(results), Is.EqualTo("Please select a departure city."));
-            });
+            _flightService.ShowsOriginRequired(results).ShouldBeTrue("Expected origin required error.");
+            _flightService.GetOriginRequiredErrorMessage(results).ShouldBeEquivalentTo("Please select a departure city.");
         }
 
         [Test]
         public void N08_Search_EmptyDestination_ShowsRequiredFieldError()
         {
-            var results = _flightService.SearchOneWayWithoutDestinationCity(DefaultFrom, _departureDate);
+            var results = _flightService.SearchOneWayWithoutDestinationCity(TestConstants.DEFAULT_FROM, _departureDate);
 
-            Assert.Multiple(() =>
-            {
-                Assert.That(_flightService.ShowsDestinationRequired(results), Is.True, "Expected destination required error.");
-                Assert.That(_flightService.GetDestinationRequiredErrorMessage(results), Is.EqualTo("Please select a destination city."));
-            });
+            _flightService.ShowsDestinationRequired(results).ShouldBeTrue("Expected destination required error.");
+            _flightService.GetDestinationRequiredErrorMessage(results).ShouldBeEquivalentTo("Please select a destination city.");
         }
 
         [Test]
         public void N09_Search_EmptyDepartureDate_ShowsRequiredFieldError()
         {
-            var results = _flightService.SearchOneWayWithoutDepartureDate(DefaultFrom, DefaultTo);
+            var results = _flightService.SearchOneWayWithoutDepartureDate(TestConstants.DEFAULT_FROM, TestConstants.DEFAULT_TO);
 
-            Assert.Multiple(() =>
-            {
-                Assert.That(_flightService.ShowsDepartureDateRequired(results), Is.True, "Expected date required error.");
-                Assert.That(_flightService.GetDepartureRequiredErrorMessage(results), Is.EqualTo("Departure date cannot be in the past."));
-            });
+            _flightService.ShowsDepartureDateRequired(results).ShouldBeTrue("Expected date required error.");
+            _flightService.GetDepartureRequiredErrorMessage(results).ShouldBeEquivalentTo("Departure date cannot be in the past.");
         }
 
         [Test]
-        public void N010_Search_DepartureDateInPast_BlockedWithError()
+        public void N10_Search_DepartureDateInPast_BlockedWithError()
         {
-            var results = _flightService.SearchOneWayWithoutReturnDate(DefaultFrom, DefaultTo, _departureDate);
+            var results = _flightService.SearchOneWayWithoutReturnDate(TestConstants.DEFAULT_FROM, TestConstants.DEFAULT_TO, _departureDate);
 
-            Assert.Multiple(() =>
-            {
-                Assert.That(_flightService.ShowsReturnDateRequired(results), Is.True, "Expected validation for past date (or date error).");
-                Assert.That(_flightService.GetReturnRequiredErrorMessage(results), Is.EqualTo("Return date must be after departure date."));
-            });
+            _flightService.ShowsReturnDateRequired(results).ShouldBeTrue("Expected validation for past date (or date error).");
+            _flightService.GetReturnRequiredErrorMessage(results).ShouldBeEquivalentTo("Return date must be after departure date.");
         }
 
         [Test]
-        public void N011_Search_SameOriginAndDestination_OneWay_ShowsReturnDestinationConflict()
+        public void N11_Search_SameOriginAndDestination_OneWay_ShowsReturnDestinationConflict()
         {
-            var results = _flightService.SearchOneWay(DefaultFrom, DefaultFrom, _departureDate);
+            var results = _flightService.SearchOneWay(TestConstants.DEFAULT_FROM, TestConstants.DEFAULT_FROM, _departureDate);
 
-            Assert.Multiple(() =>
-            {
-                Assert.That(_flightService.ShowsDestinationRequired(results), Is.True, "Expected destination required error.");
-                Assert.That(_flightService.GetDestinationRequiredErrorMessage(results), Is.EqualTo("Departure and destination cities cannot be the same."));
-            });
+            _flightService.ShowsDestinationRequired(results).ShouldBeTrue("Expected destination required error.");
+            _flightService.GetDestinationRequiredErrorMessage(results).ShouldBeEquivalentTo("Departure and destination cities cannot be the same.");
         }
 
-        public void N012_Search_SameOriginAndDestination_RoundWay_ShowsReturnDestinationConflict()
+        [Test]
+        public void N12_Search_SameOriginAndDestination_RoundWay_ShowsReturnDestinationConflict()
         {
-            var results = _flightService.SearchRoundWay(DefaultFrom, DefaultFrom, _departureDate, _returnDate);
+            var results = _flightService.SearchRoundWay(TestConstants.DEFAULT_TO, TestConstants.DEFAULT_TO, _departureDate, _returnDate);
 
-            Assert.Multiple(() =>
-            {
-                Assert.That(_flightService.ShowsDestinationRequired(results), Is.True, "Expected destination required error.");
-                Assert.That(_flightService.GetDestinationRequiredErrorMessage(results), Is.EqualTo("Departure and destination cities cannot be the same."));
-            });
+            _flightService.ShowsDestinationRequired(results).ShouldBeTrue("Expected destination required error.");
+            _flightService.GetDestinationRequiredErrorMessage(results).ShouldBeEquivalentTo("Departure and destination cities cannot be the same.");
         }
 
-        public void N013_Search_OneWay_EmptyFieldsShowsConflicts()
+        [Test]
+        public void N13_Search_OneWay_EmptyFieldsShowsConflicts()
         {
             var results = _flightService.SearchOneWayFlightsWithEmptyFields();
 
-            Assert.Multiple(() =>
-            {
-                Assert.That(_flightService.ShowsOriginRequired(results), Is.True, "Expected origin required error.");
-                Assert.That(_flightService.GetOriginRequiredErrorMessage(results), Is.EqualTo("Please select a departure city."));
-                Assert.That(_flightService.ShowsDestinationRequired(results), Is.True, "Expected destination required error.");
-                Assert.That(_flightService.GetDestinationRequiredErrorMessage(results), Is.EqualTo("Please select a destination city."));
-                Assert.That(_flightService.ShowsDepartureDateRequired(results), Is.True, "Expected date required error.");
-                Assert.That(_flightService.GetDepartureRequiredErrorMessage(results), Is.EqualTo("Departure date cannot be in the past."));
-            });
-        }
+            _flightService.ShowsOriginRequired(results).ShouldBeTrue("Expected origin required error.");
+            _flightService.GetOriginRequiredErrorMessage(results).ShouldBeEquivalentTo("Please select a departure city.");
+            _flightService.ShowsDestinationRequired(results).ShouldBeTrue("Expected destination required error.");
+            _flightService.GetDestinationRequiredErrorMessage(results).ShouldBeEquivalentTo("Please select a destination city.");
+            _flightService.ShowsDepartureDateRequired(results).ShouldBeTrue("Expected date required error.");
+            _flightService.GetDepartureRequiredErrorMessage(results).ShouldBeEquivalentTo("Departure date cannot be in the past.");
+    }
 
         [Test]
-        public void N014_Search_RoundWay_EmptyFieldsShowsConflicts()
+        public void N14_Search_RoundWay_EmptyFieldsShowsConflicts()
         {
             var results = _flightService.SearchRoundWayFlightsWithEmptyFields();
 
-            Assert.Multiple(() =>
-            {
-                Assert.That(_flightService.ShowsOriginRequired(results), Is.True, "Expected origin required error.");
-                Assert.That(_flightService.GetOriginRequiredErrorMessage(results), Is.EqualTo("Please select a departure city."));
-                Assert.That(_flightService.ShowsDestinationRequired(results), Is.True, "Expected destination required error.");
-                Assert.That(_flightService.GetDestinationRequiredErrorMessage(results), Is.EqualTo("Please select a destination city."));
-                Assert.That(_flightService.ShowsDepartureDateRequired(results), Is.True, "Expected date required error.");
-                Assert.That(_flightService.GetDepartureRequiredErrorMessage(results), Is.EqualTo("Departure date cannot be in the past."));
-                Assert.That(_flightService.ShowsReturnDateRequired(results), Is.True, "Expected validation for past date (or date error).");
-                Assert.That(_flightService.GetReturnRequiredErrorMessage(results), Is.EqualTo("Return date must be after departure date."));
-            });
+            _flightService.ShowsOriginRequired(results).ShouldBeTrue("Expected origin required error.");
+            _flightService.GetOriginRequiredErrorMessage(results).ShouldBeEquivalentTo("Please select a departure city.");
+            _flightService.ShowsDestinationRequired(results).ShouldBeTrue("Expected destination required error.");
+            _flightService.GetDestinationRequiredErrorMessage(results).ShouldBeEquivalentTo("Please select a destination city.");
+            _flightService.ShowsDepartureDateRequired(results).ShouldBeTrue("Expected date required error.");
+            _flightService.GetDepartureRequiredErrorMessage(results).ShouldBeEquivalentTo("Departure date cannot be in the past.");
+            _flightService.ShowsReturnDateRequired(results).ShouldBeTrue("Expected validation for past date (or date error).");
+            _flightService.GetReturnRequiredErrorMessage(results).ShouldBeEquivalentTo("Return date must be after departure date.");
         }
 
         [TearDown]
@@ -230,4 +194,4 @@ namespace TesterBudAutomationFramework.Tests
             _driver.Dispose();
         }
     }
-}
+};

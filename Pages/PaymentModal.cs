@@ -21,8 +21,7 @@ namespace TesterBudAutomationFramework.Pages
 
         public bool PaymentModalWindowAppeared()
         {
-            var wait = new Wait(_driver, TestConfig.CurrentSetting.TimeoutSec);
-            return wait.Visible(PaymentModalWindowLocator).Displayed;
+            return Wait.WaitUntilVisible(_driver, PaymentModalWindowLocator, Wait.DefaultTimeout).Displayed;
         }
 
         public PaymentModal EnterCard(string cardNumber, string expiryMmYy, string cvv)
@@ -35,8 +34,8 @@ namespace TesterBudAutomationFramework.Pages
 
         public FlightBookingPage SubmitPayment()
         {
-            SubmitPaymentButton.Click();
+            SubmitPaymentButton.ScrollToCenterAndClick();
             return new FlightBookingPage(_driver);
         }
     }
-}
+};

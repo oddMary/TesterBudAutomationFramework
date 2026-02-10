@@ -6,7 +6,7 @@ using System.Text.Json;
 
 namespace TesterBudAutomationFramework.Core.Config
 {
-    internal class TestConfig
+    public class TestConfig
     {
         private static Settings? _settings;
 
@@ -25,4 +25,4 @@ namespace TesterBudAutomationFramework.Core.Config
             return JsonSerializer.Deserialize<Settings>(json) ?? new Settings();
         }
     }
-}
+};

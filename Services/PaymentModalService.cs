@@ -6,7 +6,7 @@ using TesterBudAutomationFramework.Pages;
 
 namespace TesterBudAutomationFramework.Services
 {
-    internal class PaymentModalService
+    public class PaymentModalService
     {
         IWebDriver _driver;
         PaymentModal _paymentModal;
@@ -29,4 +29,4 @@ namespace TesterBudAutomationFramework.Services
                 .SubmitPayment();
         }
     }
-}
+};

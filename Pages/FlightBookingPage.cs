@@ -26,22 +26,21 @@ namespace TesterBudAutomationFramework.Pages
         private TextInput ReturnDateInput => FindComponent<TextInput>(By.Id("returnDate"));
         private Button SearchFlightsButton => FindComponent<Button>(By.XPath("//button[contains(text(), 'Search Flights')]"));
         private TextInput PassengersInput => FindComponent<TextInput>(By.Id("passengers"));
-
-        private By AvailableFlightButtonLocator => By.CssSelector(".list-group button");
-        private By FlightInfoTextLocator => By.CssSelector("p.text-muted");
-        private By FlightDateInfoTextLocator => By.XPath("//p[contains(@class,'text-muted')]/following-sibling::small[1]");
-        private By NoFlightsMessageLocator => By.ClassName("text-muted");
-        private By BookingSuccessfulMessage => By.CssSelector("h4.text-success");
-        private By FromRequiredErrorMessage => By.XPath("//select[@id='from']/following-sibling::small");
-        private By ToRequiredErrorMessage => By.XPath("//select[@id='to']/following-sibling::small");
-        private By DepartureDateRequiredErrorMessage => By.XPath("//input[@id='departureDate']/following-sibling::small");
-        private By ReturnDateRequiredErrorMessage => By.XPath("//input[@id='returnDate']/following-sibling::small");
+        private List<Label> AvailableFlightsList => FindComponents<Label>(By.CssSelector(".list-group button"));
+        private List<Label> FlightInfoTextList => FindComponents<Label>(By.CssSelector("p.text-muted"));
+        private List<Label> FlightDepartureDateInfoTextList => FindComponents<Label>(By.XPath("//h6[contains(normalize-space(.), 'Departure')]/following-sibling::small[1]"));
+        private List<Label> FlightReturnDateInfoTextList => FindComponents<Label>(By.XPath("//h6[contains(normalize-space(.), 'Return')]/following-sibling::small[1]"));
+        private Label BookingSuccessfulMessage => FindComponent<Label>(By.CssSelector("h4.text-success"));
+        private Label FromRequiredErrorMessage => FindComponent<Label>(By.XPath("//select[@id='from']/following-sibling::small"));
+        private Label ToRequiredErrorMessage => FindComponent<Label>(By.XPath("//select[@id='to']/following-sibling::small"));
+        private Label DepartureDateRequiredErrorMessage => FindComponent<Label>(By.XPath("//input[@id='departureDate']/following-sibling::small"));
+        private Label ReturnDateRequiredErrorMessage => FindComponent<Label>(By.XPath("//input[@id='returnDate']/following-sibling::small"));
 
         public FlightBookingPage(IWebDriver driver) : base(driver) { }
 
         public FlightBookingPage SetTripTypeOneWay()
         {
-            OneWayRadio.Click();
+            OneWayRadio.ScrollToCenterAndClick();
             return this;
         }
 
@@ -68,44 +67,35 @@ namespace TesterBudAutomationFramework.Pages
 
         public FlightBookingPage SetDepartureDate(DateTime date)
         {
-            DepartureDateInput.SetDate(date);
+            DepartureDateInput.SetFormattedDate(date);
             return this;
         }
 
         public FlightBookingPage SetReturnDate(DateTime date)
         {
-            ReturnDateInput.SetDate(date);
+            ReturnDateInput.SetFormattedDate(date);
             return this;
         }
 
         public FlightBookingPage SearchFlights()
         {
-            SearchFlightsButton.Click();
+            SearchFlightsButton.ScrollToCenterAndClick();
             return this;
         }
 
-        public List<IWebElement> GetListOfAwailableFlights()
+        public List<Label> GetListOfAwailableFlights()
         {
-            return _driver.FindElements(AvailableFlightButtonLocator).ToList();
-        }
-        private List<IWebElement> WaitUntilAllVisible(By locator)
-        {
-            WaitForDocumentReady();
-            var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(TestConfig.CurrentSetting.TimeoutSec));
-            return wait.Until(driver =>
-            {
-                var elements = driver.FindElements(locator).ToList();
-                if (elements.Count == 0) return null; 
-                return elements.All(e => e.Displayed) ? elements : null;
-            })!;
+            return AvailableFlightsList;
         }
 
-        private void WaitForDocumentReady()
+        public List<Label> GetListOfAwailableFlightsDeparture()
         {
-            var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(25));
-            wait.Until(d =>
-                ((IJavaScriptExecutor)d).ExecuteScript("return document.readyState")?.ToString() == "complete"
-            );
+            return FlightDepartureDateInfoTextList;
+        }
+
+        public List<Label> GetListOfAwailableFlightsReturn()
+        {
+            return FlightReturnDateInfoTextList;
         }
 
         public FlightBookingPage SetPassengers(string passengers)
@@ -114,65 +104,59 @@ namespace TesterBudAutomationFramework.Pages
             return this;
         }
 
-        public List<IWebElement> GetNoFlightsMessage()
-            => GetVisibleElements(NoFlightsMessageLocator);
+        public List<Label> GetNoFlightsMessage() => FlightInfoTextList;
 
-        public List<IWebElement> GetFlightsTextInfo()
-            => GetVisibleElements(FlightInfoTextLocator);
+        public List<Label> GetFlightsTextInfo() => FlightInfoTextList;
 
-        public List<IWebElement> GetFlightsDateTextInfo()
-            => GetDatesFromSections(FlightDateInfoTextLocator);
+        public List<Label> GetFlightsDateTextInfo() => GetListOfAwailableFlights();
 
-        public List<IWebElement> GetBookingSuccessfulMessage()
-            => GetVisibleElements(FlightInfoTextLocator);
+        public List<Label> GetDepartureFlightsDateTextInfo() => GetListOfAwailableFlightsDeparture();
+        public List<Label> GetReturnFlightsDateTextInfo() => GetListOfAwailableFlightsReturn();
 
-        public List<IWebElement> GetOriginRequiredErrorMessage()
-            => GetVisibleElements(FromRequiredErrorMessage);
+        public string GetBookingSuccessfulMessage() => FlightInfoTextList.FirstOrDefault().Text;
 
-        public List<IWebElement> GetDestinationRequiredErrorMessage()
-            => GetVisibleElements(ToRequiredErrorMessage);
+        public string GetOriginRequiredErrorMessage() => FromRequiredErrorMessage.Text;
 
-        public List<IWebElement> GetDepartureDateRequiredErrorMessage()
-            => GetVisibleElements(DepartureDateRequiredErrorMessage);
+        public string GetDestinationRequiredErrorMessage() => ToRequiredErrorMessage.Text;
 
-        public List<IWebElement> GetReturnDateRequiredErrorMessage()
-            => GetVisibleElements(ReturnDateRequiredErrorMessage);
+        public string GetDepartureDateRequiredErrorMessage() => DepartureDateRequiredErrorMessage.Text;
 
-        private List<IWebElement> GetVisibleElements(By locator)
-        {
-            var visible = WaitUntilAllVisible(locator);
-            return visible.ToList();
-        }
+        public string GetReturnDateRequiredErrorMessage() => ReturnDateRequiredErrorMessage.Text;
 
-        private List<IWebElement> GetDatesFromSections(By locator)
-        {
-            var visibleSections = GetListOfAwailableFlights();
-            foreach(var card in visibleSections)
-            {
-                WaitUntilCardHasReturnDate(card, TimeSpan.FromSeconds(TestConfig.CurrentSetting.TimeoutSec));
-            }
+        //private List<Label> GetVisibleElements()
+        //{
+        //    var visible = WaitUntilAllVisible(locator);
+        //    return visible.ToList();
+        //}
 
-            BaseControl.ScrollToCenter(_driver, visibleSections.Last());
-            var visibleDates = WaitUntilAllVisible(locator);
+        //private List<Label> GetDatesFromSections()
+        //{
+        //    var visibleSections = GetListOfAwailableFlights();
+        //    foreach (var card in visibleSections)
+        //    {
+        //        WaitUntilCardHasReturnDate(card, TimeSpan.FromSeconds(TestConfig.CurrentSetting.TimeoutSec));
+        //    }
 
-            return visibleDates.ToList();
-        }
+        //    BaseControl.ScrollToCenter(_driver, (IWebElement)visibleSections.Last());
 
-        private bool WaitUntilCardHasReturnDate(IWebElement card, TimeSpan timeout)
-        {
-            var wait = new WebDriverWait(_driver, timeout);
-            return wait.Until(_ =>
-            {
-                try
-                {
-                    var dates = card.FindElements(FlightDateInfoTextLocator);
-                    return dates.Count >= 2 && dates.All(d => d.Displayed && !string.IsNullOrWhiteSpace(d.Text));
-                }
-                catch (StaleElementReferenceException)
-                {
-                    return false; 
-                }
-            });
-        }
+        //    return visibleSections;
+        //}
+
+        //private bool WaitUntilCardHasReturnDate(Label? card, TimeSpan timeout)
+        //{
+        //    var wait = new WebDriverWait(_driver, timeout);
+        //    return wait.Until(_ =>
+        //    {
+        //        try
+        //        {
+        //            var dates = ;
+        //            return dates.Count >= 2 && dates.All(d => d.Element.Displayed && !string.IsNullOrWhiteSpace(d.Text));
+        //        }
+        //        catch (StaleElementReferenceException)
+        //        {
+        //            return false;
+        //        }
+        //    });
+        //}
     }
-}
+};

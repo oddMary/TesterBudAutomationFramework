@@ -3,29 +3,30 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
+using TesterBudAutomationFramework.Core.Waits;
 using TesterBudAutomationFramework.Pages;
 
 namespace TesterBudAutomationFramework.Core.Controls
 {
-    internal class TextInput : BaseControl
+    public class TextInput : BaseControl
     {
         public TextInput(IWebDriver driver, By locator, int timeout)
             : base(driver, locator, timeout) { }
 
         public void SetText(string text)
         {
-            var elementToClick = _wait.Clickable(_locator);
+            var elementToClick = Wait.WaitUntilClickable(_driver, _locator, Wait.DefaultTimeout);
             elementToClick.Clear();
             elementToClick.SendKeys(text);
         }
 
-        public void SetDate(DateTime date)
+        public void SetFormattedDate(DateTime date)
         {
-            var formatted = date.ToString("dd-MM-yyyy");
-            var elementToClick = _wait.Clickable(_locator);
+            var formatted = date.ToString("MM-dd-yyyy");
+            var elementToClick = Wait.WaitUntilClickable(_driver, _locator, Wait.DefaultTimeout);
             elementToClick.Clear();
             elementToClick.SendKeys(formatted);
         }
 
     }
-}
+};

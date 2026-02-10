@@ -3,16 +3,18 @@ using OpenQA.Selenium.Chrome;
 
 namespace TesterBudAutomationFramework.Core.Drivers
 {
-    internal class WebDriverFactory
+    public class WebDriverFactory
     {
         public static IWebDriver CreateWebDriver(string browser, int timeout)
         {
-            switch (browser)
+            switch (browser?.Trim().ToLowerInvariant())
             {
                 case "chrome":
                     return CreateChromeDriver(timeout);
                 default:
-                    return CreateChromeDriver(timeout);
+                    throw new ArgumentException(
+                        $"Unsupported browser: '{browser}'",
+                        nameof(browser));
             }
         }
 
@@ -20,8 +22,9 @@ namespace TesterBudAutomationFramework.Core.Drivers
         {
             var options = new ChromeOptions();
             var driver = new ChromeDriver(options);
+            driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(timeout);
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(timeout);
             return driver;
         }
     }
-}
+};
