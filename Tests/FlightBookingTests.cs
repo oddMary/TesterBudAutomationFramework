@@ -43,7 +43,7 @@ namespace TesterBudAutomationFramework.Tests
         [AllureSeverity(SeverityLevel.critical)]
         public void N01_Search_OneWay_MinimalRequiredData_DisplaysAvailableFlights()
         {
-            var results = _flightService.SearchOneWay(TestConstants.DEFAULT_FROM, TestConstants.DEFAULT_FROM, _departureDate);
+            var results = _flightService.SearchOneWay(TestConstants.DEFAULT_FROM, TestConstants.DEFAULT_TO, _departureDate);
 
             _flightService.HasFlights(results).ShouldBeTrue("Expected available flights, but none were found.");
             _flightService.NoFlightsMessageNotShown(results).ShouldBeTrue("Unexpected 'No flights found' message.");
@@ -55,7 +55,7 @@ namespace TesterBudAutomationFramework.Tests
         [Test]
         public void N02_Search_RoundTrip_WithValidDates_DisplaysMatchingFlights()
         {
-            var results = _flightService.SearchRoundWay(TestConstants.DEFAULT_TO, TestConstants.DEFAULT_TO, _departureDate, _returnDate);
+            var results = _flightService.SearchRoundWay(TestConstants.DEFAULT_FROM, TestConstants.DEFAULT_TO, _departureDate, _returnDate);
 
             _flightService.HasFlights(results).ShouldBeTrue("Expected available flights, but none were found.");
             _flightService.NoFlightsMessageNotShown(results).ShouldBeTrue("Unexpected 'No flights found' message.");
