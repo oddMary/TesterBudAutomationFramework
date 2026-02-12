@@ -1,8 +1,4 @@
-﻿using OpenQA.Selenium.DevTools.V142.ServiceWorker;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Text.Json;
+﻿using System.Text.Json;
 
 namespace TesterBudAutomationFramework.Core.Config
 {

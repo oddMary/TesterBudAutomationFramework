@@ -1,8 +1,5 @@
 ﻿using OpenQA.Selenium;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using TesterBudAutomationFramework.Core.Config;
+using Serilog;
 using TesterBudAutomationFramework.Core.Controls;
 using TesterBudAutomationFramework.Core.Waits;
 
@@ -21,20 +18,34 @@ namespace TesterBudAutomationFramework.Pages
 
         public bool PaymentModalWindowAppeared()
         {
-            return Wait.WaitUntilVisible(_driver, PaymentModalWindowLocator, Wait.DefaultTimeout).Displayed;
+            Log.Debug("Checking if Payment Modal window is visible");
+            var isVisible = Wait.WaitUntilVisible(_driver, PaymentModalWindowLocator, Wait.DefaultTimeout).Displayed;
+
+            Log.Debug("Payment Modal visibility = {isVisible}", isVisible);
+            return isVisible;
         }
 
         public PaymentModal EnterCard(string cardNumber, string expiryMmYy, string cvv)
         {
+
+            Log.Debug("Entering payment data: cardNumber=****{last4}, expiry={expiry}, cvv=***",
+                            cardNumber?.Substring(Math.Max(0, cardNumber.Length - 4)),
+                            expiryMmYy,
+                            "***");
+
             CardNumber.SetText(cardNumber);
             ExpiryDate.SetText(expiryMmYy);
             CVV.SetText(cvv);
+            Log.Debug("Payment data entered");
             return this;
         }
 
         public FlightBookingPage SubmitPayment()
         {
+            Log.Debug("Submitting payment");
             SubmitPaymentButton.ScrollToCenterAndClick();
+
+            Log.Debug("Payment submitted — navigating back to FlightBookingPage");
             return new FlightBookingPage(_driver);
         }
     }

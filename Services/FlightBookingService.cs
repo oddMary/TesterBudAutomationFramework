@@ -1,16 +1,8 @@
-﻿using NUnit.Framework;
-using NUnit.Framework.Interfaces;
-using OpenQA.Selenium;
-using OpenQA.Selenium.BiDi.Input;
-using OpenQA.Selenium.Support.UI;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using OpenQA.Selenium;
+using Serilog;
 using System.Text.RegularExpressions;
 using TesterBudAutomationFramework.Core.Controls;
 using TesterBudAutomationFramework.Pages;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace TesterBudAutomationFramework.Services
 {
@@ -21,13 +13,17 @@ namespace TesterBudAutomationFramework.Services
 
         public FlightBookingService(IWebDriver driver)
         {
+            Log.Debug("FlightBookingService.ctor: initializing with driver={driver}", driver);
             _driver = driver;
             _flightBookingPage = new FlightBookingPage(driver);
+            Log.Debug("FlightBookingService.ctor: navigating to FlightBookingPage");
             _flightBookingPage.GoToFlightBookingPage();
+            Log.Debug("FlightBookingService.ctor: initialized");
         }
 
         public FlightBookingPage SearchOneWay(string from, string to, DateTime date)
         {
+            Log.Debug("SearchOneWay: from={from}, to={to}, date={date}", from, to, date);
             _flightBookingPage
                 .GoToFlightBookingPage()
                 .SetTripTypeOneWay()
@@ -35,60 +31,107 @@ namespace TesterBudAutomationFramework.Services
                 .SetToCity(to)
                 .SetDepartureDate(date);
 
-            return _flightBookingPage.SearchFlights();
+            var page = _flightBookingPage.SearchFlights();
+            Log.Debug("SearchOneWay: search submitted");
+            return page;
         }
 
-        public bool HasFlights(FlightBookingPage flightPage) =>
-            flightPage.GetListOfAwailableFlights()?.Any() == true;
+        public bool HasFlights(FlightBookingPage flightPage)
+        { 
+            var list = flightPage.GetListOfAwailableFlights();
+            var count = list?.Count ?? 0;
+            var result = list?.Any() == true;
+            Log.Debug("HasFlights: count={count}, result={result}", count, result);
+            return result;
+        }
 
-        public bool NoFlightsMessageNotShown(FlightBookingPage flightPage) => 
-            flightPage.GetNoFlightsMessage()?.Any() == true;
+        public bool NoFlightsMessageNotShown(FlightBookingPage flightPage)
+        {
+            var list = flightPage.GetNoFlightsMessage();
+            var count = list?.Count ?? 0;
+            var result = list?.Any() == true;
+            Log.Debug("NoFlightsMessageNotShown: count={count}, result={result}", count, result);
+            return result;
+        }
 
         public FlightBookingPage SearchRoundWay(string from, string to, DateTime date, DateTime returnDate)
         {
+            Log.Debug("SearchRoundWay: from={from}, to={to}, depart={depart}, return={return}", from, to, date, returnDate);
             SearchOneWay(from, to, date);
             _flightBookingPage
                 .SetTripTypeRoundWay()
                 .SetReturnDate(returnDate);
 
-            return _flightBookingPage.SearchFlights();
+            var page = _flightBookingPage.SearchFlights();
+            Log.Debug("SearchRoundWay: search submitted");
+            return page;
         }
 
         public FlightBookingPage SearchOneWayFlightsWithEmptyFields()
         {
-            return _flightBookingPage.SearchFlights();
+            Log.Debug("SearchOneWayFlightsWithEmptyFields: submitting empty search (one-way)");
+            var page = _flightBookingPage.SearchFlights();
+            Log.Debug("SearchOneWayFlightsWithEmptyFields: search submitted");
+            return page;
         }
 
         public FlightBookingPage SearchRoundWayFlightsWithEmptyFields()
         {
-            _flightBookingPage
-                .SetTripTypeRoundWay();
-            return _flightBookingPage.SearchFlights();
+            Log.Debug("SearchRoundWayFlightsWithEmptyFields: submitting empty search (round-way)");
+            _flightBookingPage.SetTripTypeRoundWay();
+            var page = _flightBookingPage.SearchFlights();
+            Log.Debug("SearchRoundWayFlightsWithEmptyFields: search submitted");
+            return page;
         }
 
         public bool AllFlightsMatchRoute(string city)
         {
+            Log.Debug("AllFlightsMatchRoute: city={city}", city);
             var flightsInfo = _flightBookingPage.GetFlightsTextInfo();
-            if (flightsInfo.Count == 0) return false;
+            var count = flightsInfo?.Count ?? 0;
+            Log.Debug("AllFlightsMatchRoute: items={count}", count);
 
-            return flightsInfo.All(f => f.Text.Contains(city));
+            if (flightsInfo == null || count == 0)
+            {
+                Log.Debug("AllFlightsMatchRoute: no items -> false");
+                return false;
+            }
+            var target = city ?? string.Empty;
+            var result = flightsInfo.All(f =>
+                    (f?.Text ?? string.Empty).Contains(target, StringComparison.OrdinalIgnoreCase));
+
+            Log.Debug("AllFlightsMatchRoute: result={result}", result);
+            return result;
         }
 
         public bool DepartureFlightDateMatch(DateTime date)
         {
+            Log.Debug("DepartureFlightDateMatch: date={date}", date);
             var flightsDateInfo = _flightBookingPage.GetDepartureFlightsDateTextInfo();
-            return AllFlightsMatchDate(flightsDateInfo, date);
+            var result = AllFlightsMatchDate(flightsDateInfo, date);
+            var count = flightsDateInfo?.Count ?? 0;
+            Log.Debug("DepartureFlightDateMatch: items={count}, result={result}", count, result);
+            return result;
         }
 
         public bool ReturnFlightDateMatch(DateTime date)
         {
+            Log.Debug("ReturnFlightDateMatch: date={date}", date);
             var flightsDateInfo = _flightBookingPage.GetReturnFlightsDateTextInfo();
-            return AllFlightsMatchDate(flightsDateInfo, date);
+            var result = AllFlightsMatchDate(flightsDateInfo, date);
+            Log.Debug("ReturnFlightDateMatch: items={count}, result={result}", flightsDateInfo?.Count ?? 0, result);
+            return result;
         }
 
         public bool AllFlightsMatchDate(List<Label> flightsDateInfo, DateTime date)
         {
-            if (flightsDateInfo.Count == 0) return false;
+            Log.Debug("AllFlightsMatchDate: target date={date}, items={count}", date, flightsDateInfo?.Count ?? 0);
+
+            if (flightsDateInfo?.Count == 0)
+            {
+                Log.Debug("AllFlightsMatchDate: no items -> false");
+                return false;
+            }
 
             var d = date.Day;   
             var m = date.Month;  
@@ -96,116 +139,158 @@ namespace TesterBudAutomationFramework.Services
 
             var pattern = $@"\b0?{m}/0?{d}/{y}\b";
             var regex = new Regex(pattern);
+            Log.Debug("AllFlightsMatchDate: regex pattern={pattern}", pattern);
 
-            foreach(var ttt in flightsDateInfo)
-            {
-                var rrr = ttt.Text;
-            }
-
-            return flightsDateInfo.Any(f => regex.IsMatch(f.Text));
+            var result = flightsDateInfo?.All(f => regex.IsMatch(f.Text ?? string.Empty));
+            Log.Debug("AllFlightsMatchDate: result={result}", result);
+            return result ?? false;
         }
 
         public FlightBookingPage SearchWithPassengers(string from, string to, DateTime date, int adults)
         {
+            Log.Debug("SearchWithPassengers: from={from}, to={to}, date={date}, adults={adults}", from, to, date, adults);
             SearchOneWay(from, to, date);
             _flightBookingPage.SetPassengers(adults.ToString());
 
-            return _flightBookingPage.SearchFlights();
+            var page = _flightBookingPage.SearchFlights();
+            Log.Debug("SearchWithPassengers: search submitted");
+            return page;
         }
 
         public PaymentModal SelectFirstFlight(FlightBookingPage flights)
         {
+            Log.Debug("SelectFirstFlight: clicking first available flight");
             flights.GetListOfAwailableFlights().First().Click();
+            Log.Debug("SelectFirstFlight: opening PaymentModal");
             return new PaymentModal(_driver);
         }
 
         public bool IsBookingSuccessfulMessagePresented(FlightBookingPage flightPage)
         {
-            return flightPage.GetBookingSuccessfulMessage()?.Any() == true;
+            Log.Debug("IsBookingSuccessfulMessagePresented: checking success message (note: calling .Any() on string per original logic)");
+            var result = flightPage.GetBookingSuccessfulMessage()?.Any() == true;
+            Log.Debug("IsBookingSuccessfulMessagePresented: result={result}", result);
+            return result;
         }
 
         public bool ShowsOriginRequired(FlightBookingPage flight)
         {
-            return flight.GetOriginRequiredErrorMessage()?.Any() == true;
+            Log.Debug("ShowsOriginRequired: checking origin required message (note: .Any() on string per original logic)");
+            var result = flight.GetOriginRequiredErrorMessage()?.Any() == true;
+            Log.Debug("ShowsOriginRequired: result={result}", result);
+            return result;
         }
 
         public bool ShowsDestinationRequired(FlightBookingPage flight)
         {
-            return flight.GetDestinationRequiredErrorMessage()?.Any() == true;
+            Log.Debug("ShowsDestinationRequired: checking destination required message (note: .Any() on string per original logic)");
+            var result = flight.GetDestinationRequiredErrorMessage()?.Any() == true;
+            Log.Debug("ShowsDestinationRequired: result={result}", result);
+            return result;
         }
 
         public bool ShowsDepartureDateRequired(FlightBookingPage flight)
         {
-            return flight.GetDepartureDateRequiredErrorMessage()?.Any() == true;
+            Log.Debug("ShowsDepartureDateRequired: checking departure date required message (note: .Any() on string per original logic)");
+            var result = flight.GetDepartureDateRequiredErrorMessage()?.Any() == true;
+            Log.Debug("ShowsDepartureDateRequired: result={result}", result);
+            return result;
         }
 
         public bool ShowsReturnDateRequired(FlightBookingPage flight)
         {
-            return flight.GetReturnDateRequiredErrorMessage().Any();
+            Log.Debug("ShowsReturnDateRequired: checking return date required message (note: .Any() on string per original logic)");
+            var result = flight.GetReturnDateRequiredErrorMessage().Any();
+            Log.Debug("ShowsReturnDateRequired: result={result}", result);
+            return result;
         }
 
         public string GetOriginRequiredErrorMessage(FlightBookingPage flightPage)
         {
-            return flightPage.GetOriginRequiredErrorMessage();
+            Log.Debug("GetOriginRequiredErrorMessage: fetching text");
+            var text = flightPage.GetOriginRequiredErrorMessage();
+            Log.Debug("GetOriginRequiredErrorMessage: value=\"{text}\"", text);
+            return text;
         }
 
         public string GetDestinationRequiredErrorMessage(FlightBookingPage flightPage)
         {
-            return flightPage.GetDestinationRequiredErrorMessage();
+            Log.Debug("GetDestinationRequiredErrorMessage: fetching text");
+            var text = flightPage.GetDestinationRequiredErrorMessage();
+            Log.Debug("GetDestinationRequiredErrorMessage: value=\"{text}\"", text);
+            return text;
         }
 
         public string GetDepartureRequiredErrorMessage(FlightBookingPage flightPage)
         {
-            return flightPage.GetDepartureDateRequiredErrorMessage();
+            Log.Debug("GetDepartureRequiredErrorMessage: fetching text");
+            var text = flightPage.GetDepartureDateRequiredErrorMessage();
+            Log.Debug("GetDepartureRequiredErrorMessage: value=\"{text}\"", text);
+            return text;
         }
 
         public string GetReturnRequiredErrorMessage(FlightBookingPage flightPage)
         {
-            return flightPage.GetReturnDateRequiredErrorMessage();
+            Log.Debug("GetReturnRequiredErrorMessage: fetching text");
+            var text = flightPage.GetReturnDateRequiredErrorMessage();
+            Log.Debug("GetReturnRequiredErrorMessage: value=\"{text}\"", text);
+            return text;
         }
 
         public FlightBookingPage SearchOneWayWithoutOriginCity(string to, DateTime date)
         {
+            Log.Debug("SearchOneWayWithoutOriginCity: to={to}, date={date}", to, date);
             _flightBookingPage
                 .GoToFlightBookingPage()
                 .SetTripTypeOneWay()
                 .SetToCity(to)
                 .SetDepartureDate(date);
 
-            return _flightBookingPage.SearchFlights();
+            var page = _flightBookingPage.SearchFlights();
+            Log.Debug("SearchOneWayWithoutOriginCity: search submitted");
+            return page;
         }
 
         public FlightBookingPage SearchOneWayWithoutDestinationCity(string from, DateTime date)
         {
+            Log.Debug("SearchOneWayWithoutDestinationCity: from={from}, date={date}", from, date);
             _flightBookingPage
                 .GoToFlightBookingPage()
                 .SetTripTypeOneWay()
                 .SetFromCity(from)
                 .SetDepartureDate(date);
 
-            return _flightBookingPage.SearchFlights();
+            var page = _flightBookingPage.SearchFlights();
+            Log.Debug("SearchOneWayWithoutDestinationCity: search submitted");
+            return page;
         }
 
         public FlightBookingPage SearchOneWayWithoutDepartureDate(string from, string to)
         {
+            Log.Debug("SearchOneWayWithoutDepartureDate: from={from}, to={to}", from, to);
             _flightBookingPage
                 .GoToFlightBookingPage()
                 .SetTripTypeOneWay()
                 .SetFromCity(from)
                 .SetToCity(to);
 
-            return _flightBookingPage.SearchFlights();
+            var page = _flightBookingPage.SearchFlights();
+            Log.Debug("SearchOneWayWithoutDepartureDate: search submitted");
+            return page;
         }
 
         public FlightBookingPage SearchOneWayWithoutReturnDate(string from, string to, DateTime date)
         {
+            Log.Debug("SearchOneWayWithoutReturnDate: from={from}, to={to}, depart={date}", from, to, date);
             _flightBookingPage
                 .GoToFlightBookingPage()
                 .SetFromCity(from)
                 .SetToCity(to)
                 .SetDepartureDate(date);
 
-            return _flightBookingPage.SearchFlights();
+            var page = _flightBookingPage.SearchFlights();
+            Log.Debug("SearchOneWayWithoutReturnDate: search submitted");
+            return page;
         }
     }
 };

@@ -1,7 +1,4 @@
 ﻿using OpenQA.Selenium;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using TesterBudAutomationFramework.Pages;
 
 namespace TesterBudAutomationFramework.Services

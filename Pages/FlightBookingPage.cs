@@ -1,19 +1,6 @@
-﻿using Microsoft.VisualStudio.TestPlatform.ObjectModel;
-using NUnit.Framework.Constraints;
-using NUnit.Framework.Interfaces;
-using NUnit.Framework.Internal;
-using OpenQA.Selenium;
-using OpenQA.Selenium.BiDi.Input;
-using OpenQA.Selenium.Support.UI;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Text;
-using System.Xml.Linq;
-using TesterBudAutomationFramework.Core.Config;
+﻿using OpenQA.Selenium;
+using Serilog;
 using TesterBudAutomationFramework.Core.Controls;
-using TesterBudAutomationFramework.Core.Waits;
-using static System.Collections.Specialized.BitVector32;
 
 namespace TesterBudAutomationFramework.Pages
 {
@@ -40,14 +27,17 @@ namespace TesterBudAutomationFramework.Pages
 
         public FlightBookingPage SetTripTypeOneWay()
         {
+            Log.Debug("Setting trip type: One Way");
             OneWayRadio.ScrollToCenterAndClick();
             return this;
         }
 
         public FlightBookingPage SetTripTypeRoundWay()
         {
+            Log.Debug("Setting trip type: Round Trip");
             if (OneWayRadio.Element.Selected)
             {
+                Log.Debug("OneWay radio was selected – switching to Round Trip");
                 OneWayRadio.Click();
             }             
             return this;
@@ -55,108 +45,120 @@ namespace TesterBudAutomationFramework.Pages
 
         public FlightBookingPage SetFromCity(string city)
         {
+            Log.Debug("Selecting origin city: {city}", city);
             FromSelect.SelectOption(city);
             return this;
         }
 
         public FlightBookingPage SetToCity(string destination)
         {
+            Log.Debug("Selecting destination city: {destination}", destination);
             ToSelect.SelectOption(destination);
             return this;
         }
 
         public FlightBookingPage SetDepartureDate(DateTime date)
         {
+            Log.Debug("Setting departure date: {date}", date);
             DepartureDateInput.SetFormattedDate(date);
             return this;
         }
 
         public FlightBookingPage SetReturnDate(DateTime date)
         {
+            Log.Debug("Setting return date: {date}", date);
             ReturnDateInput.SetFormattedDate(date);
             return this;
         }
 
         public FlightBookingPage SearchFlights()
         {
+            Log.Debug("Clicking Search Flights button");
             SearchFlightsButton.ScrollToCenterAndClick();
             return this;
         }
 
         public List<Label> GetListOfAwailableFlights()
         {
+            Log.Debug("Fetching list of available flights");
             return AvailableFlightsList;
         }
 
         public List<Label> GetListOfAwailableFlightsDeparture()
         {
+            Log.Debug("Fetching list of available flights (departure dates)");
             return FlightDepartureDateInfoTextList;
         }
 
         public List<Label> GetListOfAwailableFlightsReturn()
         {
+            Log.Debug("Fetching list of available flights (return dates)");
             return FlightReturnDateInfoTextList;
         }
 
         public FlightBookingPage SetPassengers(string passengers)
         {
+            Log.Debug("Setting number of passengers: {passengers}", passengers);
             PassengersInput.SetText(passengers);
             return this;
         }
+        public List<Label> GetNoFlightsMessage()
+        {
+            Log.Debug("Fetching 'no flights' info text");
+            return FlightInfoTextList;
+        }
 
-        public List<Label> GetNoFlightsMessage() => FlightInfoTextList;
+        public List<Label> GetFlightsTextInfo()
+        {
+            Log.Debug("Fetching flights info text");
+            return FlightInfoTextList;
+        }
 
-        public List<Label> GetFlightsTextInfo() => FlightInfoTextList;
+        public List<Label> GetFlightsDateTextInfo()
+        {
+            Log.Debug("Fetching flights date info text");
+            return GetListOfAwailableFlights();
+        }
 
-        public List<Label> GetFlightsDateTextInfo() => GetListOfAwailableFlights();
+        public List<Label> GetDepartureFlightsDateTextInfo()
+        {
+            Log.Debug("Fetching flights departure date text");
+            return GetListOfAwailableFlightsDeparture();
+        }
 
-        public List<Label> GetDepartureFlightsDateTextInfo() => GetListOfAwailableFlightsDeparture();
-        public List<Label> GetReturnFlightsDateTextInfo() => GetListOfAwailableFlightsReturn();
+        public List<Label> GetReturnFlightsDateTextInfo()
+        {
+            Log.Debug("Fetching flights return date text");
+            return GetListOfAwailableFlightsReturn();
+        }
 
-        public string GetBookingSuccessfulMessage() => FlightInfoTextList.FirstOrDefault().Text;
+        public string? GetBookingSuccessfulMessage()
+        {
+            Log.Debug("Fetching booking success message");
+            return BookingSuccessfulMessage.Text;
+        }
+        public string? GetOriginRequiredErrorMessage()
+        {
+            Log.Debug("Fetching 'origin required' validation message");
+            return FromRequiredErrorMessage.Text;
+        }
 
-        public string GetOriginRequiredErrorMessage() => FromRequiredErrorMessage.Text;
+        public string? GetDestinationRequiredErrorMessage()
+        {
+            Log.Debug("Fetching 'destination required' validation message");
+            return ToRequiredErrorMessage.Text;
+        }
 
-        public string GetDestinationRequiredErrorMessage() => ToRequiredErrorMessage.Text;
+        public string? GetDepartureDateRequiredErrorMessage()
+        {
+            Log.Debug("Fetching 'departure date required' validation message");
+            return DepartureDateRequiredErrorMessage.Text;
+        }
 
-        public string GetDepartureDateRequiredErrorMessage() => DepartureDateRequiredErrorMessage.Text;
-
-        public string GetReturnDateRequiredErrorMessage() => ReturnDateRequiredErrorMessage.Text;
-
-        //private List<Label> GetVisibleElements()
-        //{
-        //    var visible = WaitUntilAllVisible(locator);
-        //    return visible.ToList();
-        //}
-
-        //private List<Label> GetDatesFromSections()
-        //{
-        //    var visibleSections = GetListOfAwailableFlights();
-        //    foreach (var card in visibleSections)
-        //    {
-        //        WaitUntilCardHasReturnDate(card, TimeSpan.FromSeconds(TestConfig.CurrentSetting.TimeoutSec));
-        //    }
-
-        //    BaseControl.ScrollToCenter(_driver, (IWebElement)visibleSections.Last());
-
-        //    return visibleSections;
-        //}
-
-        //private bool WaitUntilCardHasReturnDate(Label? card, TimeSpan timeout)
-        //{
-        //    var wait = new WebDriverWait(_driver, timeout);
-        //    return wait.Until(_ =>
-        //    {
-        //        try
-        //        {
-        //            var dates = ;
-        //            return dates.Count >= 2 && dates.All(d => d.Element.Displayed && !string.IsNullOrWhiteSpace(d.Text));
-        //        }
-        //        catch (StaleElementReferenceException)
-        //        {
-        //            return false;
-        //        }
-        //    });
-        //}
+        public string? GetReturnDateRequiredErrorMessage()
+        {
+            Log.Debug("Fetching 'return date required' validation message");
+            return ReturnDateRequiredErrorMessage.Text;
+        }
     }
 };

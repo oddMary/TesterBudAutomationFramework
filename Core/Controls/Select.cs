@@ -1,26 +1,18 @@
 ﻿using OpenQA.Selenium;
-using OpenQA.Selenium.BiDi.BrowsingContext;
-using OpenQA.Selenium.DevTools.V142.DOM;
 using OpenQA.Selenium.Support.UI;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Serilog;
 using TesterBudAutomationFramework.Core.Waits;
 
 namespace TesterBudAutomationFramework.Core.Controls
 {
     public class Select : BaseControl
     {
-        //IWebDriver _driver;
-
         public Select(IWebDriver driver, By locator, int timeout)
-            : base(driver, locator, timeout) 
-        {
-            //_driver = driver;
-        }
+            : base(driver, locator, timeout) { }
 
         public void SelectOption(string text)
         {
+            Log.Information("SelectByText: '{Text}' => {Locator}", text, _locator);
             var elementToClick = Wait.WaitUntilClickable(_driver, _locator, Wait.DefaultTimeout);
             SelectElement select = new SelectElement(elementToClick);
             select.SelectByText(text);

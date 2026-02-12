@@ -1,8 +1,4 @@
 ﻿using OpenQA.Selenium;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using TesterBudAutomationFramework.Core.Waits;
 
 namespace TesterBudAutomationFramework.Core.Controls
 {
@@ -10,6 +6,5 @@ namespace TesterBudAutomationFramework.Core.Controls
     {
         public Button(IWebDriver driver, By locator, int timeout) 
             : base(driver, locator, timeout) { }
-
     }
 };

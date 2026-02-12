@@ -1,23 +1,24 @@
-﻿using NUnit.Framework;
+﻿using Allure.Net.Commons;
+using Allure.NUnit;
+using Allure.NUnit.Attributes;
+using NUnit.Framework;
+using NUnit.Framework.Interfaces;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Support.UI;
 using Shouldly;
-using System.Buffers.Text;
-using System.Security.Cryptography.X509Certificates;
-using System.Threading;
+using System.IO;
 using TesterBudAutomationFramework.Core.Config;
 using TesterBudAutomationFramework.Core.Constants;
-using TesterBudAutomationFramework.Core.Controls;
 using TesterBudAutomationFramework.Core.Drivers;
-using TesterBudAutomationFramework.Core.Waits;
-using TesterBudAutomationFramework.Pages;
 using TesterBudAutomationFramework.Services;
 
 namespace TesterBudAutomationFramework.Tests
 {
+    [AllureNUnit]
+    [AllureSuite("Flights")]
+    [AllureFeature("Booking")]
     [TestFixture]
     [Category("UI")]
-    public class FlightBookingTests
+    public class FlightBookingTests : BaseTest
     {
         private IWebDriver _driver;
         private FlightBookingService _flightService;
@@ -38,11 +39,12 @@ namespace TesterBudAutomationFramework.Tests
         }
 
         [Test]
+        [AllureStory("Search One-Way")]
+        [AllureSeverity(SeverityLevel.critical)]
         public void N01_Search_OneWay_MinimalRequiredData_DisplaysAvailableFlights()
         {
-            var results = _flightService.SearchOneWay(TestConstants.DEFAULT_FROM, TestConstants.DEFAULT_TO, _departureDate);
+            var results = _flightService.SearchOneWay(TestConstants.DEFAULT_FROM, TestConstants.DEFAULT_FROM, _departureDate);
 
-            //Assert
             _flightService.HasFlights(results).ShouldBeTrue("Expected available flights, but none were found.");
             _flightService.NoFlightsMessageNotShown(results).ShouldBeTrue("Unexpected 'No flights found' message.");
             _flightService.AllFlightsMatchRoute(TestConstants.DEFAULT_FROM).ShouldBeTrue("From city do not match.");
@@ -53,7 +55,7 @@ namespace TesterBudAutomationFramework.Tests
         [Test]
         public void N02_Search_RoundTrip_WithValidDates_DisplaysMatchingFlights()
         {
-            var results = _flightService.SearchRoundWay(TestConstants.DEFAULT_FROM, TestConstants.DEFAULT_TO, _departureDate, _returnDate);
+            var results = _flightService.SearchRoundWay(TestConstants.DEFAULT_TO, TestConstants.DEFAULT_TO, _departureDate, _returnDate);
 
             _flightService.HasFlights(results).ShouldBeTrue("Expected available flights, but none were found.");
             _flightService.NoFlightsMessageNotShown(results).ShouldBeTrue("Unexpected 'No flights found' message.");
@@ -104,7 +106,7 @@ namespace TesterBudAutomationFramework.Tests
             _flightService.IsBookingSuccessfulMessagePresented(completed).ShouldBeTrue("Booking confirmation ID not found.");
         }
 
-        //// ---------- Negative ----------
+        // ---------- Negative ----------
 
         [Test]
         public void N07_Search_EmptyOrigin_ShowsRequiredFieldError()
@@ -171,7 +173,7 @@ namespace TesterBudAutomationFramework.Tests
             _flightService.GetDestinationRequiredErrorMessage(results).ShouldBeEquivalentTo("Please select a destination city.");
             _flightService.ShowsDepartureDateRequired(results).ShouldBeTrue("Expected date required error.");
             _flightService.GetDepartureRequiredErrorMessage(results).ShouldBeEquivalentTo("Departure date cannot be in the past.");
-    }
+        }
 
         [Test]
         public void N14_Search_RoundWay_EmptyFieldsShowsConflicts()
@@ -189,8 +191,18 @@ namespace TesterBudAutomationFramework.Tests
         }
 
         [TearDown]
-        public void TearDown()
+        public void AfterEach()
         {
+            if (TestContext.CurrentContext.Result.Outcome.Status != TestStatus.Passed)
+            {
+                try
+                {
+                    var testName = TestContext.CurrentContext.Test.Name;
+                    var path = _shots.Save(_driver, testName, "teardown");
+                    AllureApi.AddAttachment(testName, "image/png", path);
+                }
+                catch { }
+            }
             _driver.Dispose();
         }
     }
