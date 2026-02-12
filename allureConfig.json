@@ -1,0 +1,11 @@
+{
+  "allure": {
+    "directory": "allure-results",
+    "cleanResultsDirectory": true,
+    "links": [
+      "https://jira.example.com/browse/{issue}",
+      "https://tms.example.com/cases/{tms}"
+    ],
+    "title": "UI E2E — Flight Booker"
+  }
+}

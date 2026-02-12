@@ -1,0 +1,82 @@
+[12:14:56 INF] WebDriverFactory.CreateWebDriver: requested browser='Chrome', timeout=3s
+[12:14:56 INF] WebDriverFactory.CreateChromeDriver: initializing Chrome with timeout=3s
+[12:14:58 INF] WebDriverFactory.CreateChromeDriver: driver created. PageLoad=3s, ImplicitWait=3s
+[12:14:58 DBG] FlightBookingService.ctor: initializing with driver=OpenQA.Selenium.Chrome.ChromeDriver
+[12:14:58 DBG] BasePage: created page object FlightBookingPage with driver session
+[12:14:58 DBG] FlightBookingService.ctor: navigating to FlightBookingPage
+[12:14:58 INF] GoToFlightBookingPage: opening hub page...
+[12:14:58 INF] Navigate To BaseUrl: https://testerbud.com/practice-page-selection
+[12:14:59 DBG] Navigation Success: https://testerbud.com/practice-page-selection
+[12:14:59 INF] GoToFlightBookingPage: clicking Flight Booking link
+[12:14:59 DBG] BasePage.FindComponent: locating Link by By.CssSelector: a[href*='flight']
+[12:14:59 INF] ScrollToCenterAndClick: waiting clickable => By.CssSelector: a[href*='flight']
+[12:14:59 DBG] WaitUntilClickable: waiting for By.CssSelector: a[href*='flight'] for 5s
+[12:14:59 DBG] WaitUntilClickable: element is clickable => By.CssSelector: a[href*='flight']
+[12:14:59 DBG] ScrollToCenter: done for => By.CssSelector: a[href*='flight']
+[12:15:00 INF] ScrollToCenterAndClick: clicked => By.CssSelector: a[href*='flight']
+[12:15:00 INF] GoToFlightBookingPage: navigation success, returning FlightBookingPage
+[12:15:00 DBG] BasePage: created page object FlightBookingPage with driver session
+[12:15:00 DBG] FlightBookingService.ctor: initialized
+[12:15:00 DBG] BasePage: created page object PaymentModal with driver session
+[12:15:00 DBG] SearchWithPassengers: from=New York, to=London, date=02/19/2026 00:00:00, adults=3
+[12:15:00 DBG] SearchOneWay: from=New York, to=London, date=02/19/2026 00:00:00
+[12:15:00 INF] GoToFlightBookingPage: opening hub page...
+[12:15:00 INF] Navigate To BaseUrl: https://testerbud.com/practice-page-selection
+[12:15:00 DBG] Navigation Success: https://testerbud.com/practice-page-selection
+[12:15:00 INF] GoToFlightBookingPage: clicking Flight Booking link
+[12:15:00 DBG] BasePage.FindComponent: locating Link by By.CssSelector: a[href*='flight']
+[12:15:00 INF] ScrollToCenterAndClick: waiting clickable => By.CssSelector: a[href*='flight']
+[12:15:00 DBG] WaitUntilClickable: waiting for By.CssSelector: a[href*='flight'] for 5s
+[12:15:00 DBG] WaitUntilClickable: element is clickable => By.CssSelector: a[href*='flight']
+[12:15:00 DBG] ScrollToCenter: done for => By.CssSelector: a[href*='flight']
+[12:15:01 INF] ScrollToCenterAndClick: clicked => By.CssSelector: a[href*='flight']
+[12:15:01 INF] GoToFlightBookingPage: navigation success, returning FlightBookingPage
+[12:15:01 DBG] BasePage: created page object FlightBookingPage with driver session
+[12:15:01 DBG] Setting trip type: One Way
+[12:15:01 DBG] BasePage.FindComponent: locating Checkbox by By.Id: oneWay
+[12:15:01 INF] ScrollToCenterAndClick: waiting clickable => By.Id: oneWay
+[12:15:01 DBG] WaitUntilClickable: waiting for By.Id: oneWay for 5s
+[12:15:01 DBG] WaitUntilClickable: element is clickable => By.Id: oneWay
+[12:15:01 DBG] ScrollToCenter: done for => By.Id: oneWay
+[12:15:01 INF] ScrollToCenterAndClick: clicked => By.Id: oneWay
+[12:15:01 DBG] Selecting origin city: New York
+[12:15:01 DBG] BasePage.FindComponent: locating Select by By.Id: from
+[12:15:01 INF] SelectByText: 'New York' => By.Id: from
+[12:15:01 DBG] WaitUntilClickable: waiting for By.Id: from for 5s
+[12:15:01 DBG] WaitUntilClickable: element is clickable => By.Id: from
+[12:15:01 DBG] Selecting destination city: London
+[12:15:01 DBG] BasePage.FindComponent: locating Select by By.Id: to
+[12:15:01 INF] SelectByText: 'London' => By.Id: to
+[12:15:01 DBG] WaitUntilClickable: waiting for By.Id: to for 5s
+[12:15:01 DBG] WaitUntilClickable: element is clickable => By.Id: to
+[12:15:01 DBG] Setting departure date: 02/19/2026 00:00:00
+[12:15:01 DBG] BasePage.FindComponent: locating TextInput by By.Id: departureDate
+[12:15:01 INF] SetFormattedDate: '02-19-2026' (format "MM-dd-yyyy") => By.Id: departureDate
+[12:15:01 DBG] WaitUntilClickable: waiting for By.Id: departureDate for 5s
+[12:15:01 DBG] WaitUntilClickable: element is clickable => By.Id: departureDate
+[12:15:02 DBG] SetFormattedDate: keys sent to By.Id: departureDate
+[12:15:02 DBG] Clicking Search Flights button
+[12:15:02 DBG] BasePage.FindComponent: locating Button by By.XPath: //button[contains(text(), 'Search Flights')]
+[12:15:02 INF] ScrollToCenterAndClick: waiting clickable => By.XPath: //button[contains(text(), 'Search Flights')]
+[12:15:02 DBG] WaitUntilClickable: waiting for By.XPath: //button[contains(text(), 'Search Flights')] for 5s
+[12:15:02 DBG] WaitUntilClickable: element is clickable => By.XPath: //button[contains(text(), 'Search Flights')]
+[12:15:02 DBG] ScrollToCenter: done for => By.XPath: //button[contains(text(), 'Search Flights')]
+[12:15:02 INF] ScrollToCenterAndClick: clicked => By.XPath: //button[contains(text(), 'Search Flights')]
+[12:15:02 DBG] SearchOneWay: search submitted
+[12:15:02 DBG] Setting number of passengers: 3
+[12:15:02 DBG] BasePage.FindComponent: locating TextInput by By.Id: passengers
+[12:15:02 INF] SetText: '3' => By.Id: passengers
+[12:15:02 DBG] WaitUntilClickable: waiting for By.Id: passengers for 5s
+[12:15:02 DBG] WaitUntilClickable: element is clickable => By.Id: passengers
+[12:15:02 DBG] SetText: keys sent to By.Id: passengers
+[12:15:02 DBG] Clicking Search Flights button
+[12:15:02 DBG] BasePage.FindComponent: locating Button by By.XPath: //button[contains(text(), 'Search Flights')]
+[12:15:02 INF] ScrollToCenterAndClick: waiting clickable => By.XPath: //button[contains(text(), 'Search Flights')]
+[12:15:02 DBG] WaitUntilClickable: waiting for By.XPath: //button[contains(text(), 'Search Flights')] for 5s
+[12:15:02 DBG] WaitUntilClickable: element is clickable => By.XPath: //button[contains(text(), 'Search Flights')]
+[12:15:02 DBG] ScrollToCenter: done for => By.XPath: //button[contains(text(), 'Search Flights')]
+[12:15:02 INF] ScrollToCenterAndClick: clicked => By.XPath: //button[contains(text(), 'Search Flights')]
+[12:15:02 DBG] SearchWithPassengers: search submitted
+[12:15:02 DBG] Fetching list of available flights
+[12:15:02 DBG] BasePage.FindComponents: locating multiple Label by By.CssSelector: .list-group button
+[12:15:03 DBG] HasFlights: count=2, result=True

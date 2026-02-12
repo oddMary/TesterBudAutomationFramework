@@ -1,0 +1,134 @@
+##############################
+#       .NET BUILD OUTPUT    #
+##############################
+
+bin/
+obj/
+out/
+Release/
+Debug/
+*.dll
+*.exe
+*.pdb
+*.mdb
+*.cache
+*.tmp
+*.log
+
+##############################
+#      SERILOG LOG FILES     #
+##############################
+
+# Любые логи, где бы они ни лежали
+logs/
+**/logs/
+*.log
+*.json.log
+
+# Конкретные Serilog папки (как у тебя)
+D:/Frameworks/TesterBudAutomationFramework/TesterBudAutomationFramework/bin/Debug/net10.0/logs/
+
+##############################
+#       ALLURE ARTIFACTS     #
+##############################
+
+# Allure results (JSON)
+allure-results/
+**/allure-results/
+
+# Allure static reports
+allure-report/
+**/allure-report/
+
+# Allure history
+allure-history/
+**/allure-history/
+
+# Allure attachments (скриншоты, видео, файлы шагов)
+**/allure-results/*.png
+**/allure-results/*.jpg
+**/allure-results/*.jpeg
+**/allure-results/*.gif
+**/allure-results/*.webp
+**/allure-results/*.mp4
+**/allure-results/*.json
+
+##############################
+#      TEST SCREENSHOTS      #
+##############################
+
+# Общая папка под скриншоты
+screenshots/
+**/screenshots/
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.webp
+
+# Если ты хранишь скриншоты в Pages / PageObjects
+**/Pages/**/*.png
+**/Pages/**/*.jpg
+
+##############################
+#           Rider            #
+##############################
+
+.idea/
+*.sln.iml
+
+##############################
+#        Visual Studio       #
+##############################
+
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+##############################
+#         VS Code            #
+##############################
+
+.vscode/
+
+##############################
+#       NuGet / Packages     #
+##############################
+
+*.nupkg
+packages/
+.nuget/
+*.snupkg
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+##############################
+#       DOTNET CLI           #
+##############################
+
+*.deps.json
+*.runtimeconfig.json
+*.lock.json
+
+##############################
+#   System / Temp / Cache    #
+##############################
+
+*.tmp
+*.temp
+*.cache
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.DS_Store
+
+##############################
+#   Rider static analysis    #
+##############################
+
+.idea/
+*.DotSettings.user

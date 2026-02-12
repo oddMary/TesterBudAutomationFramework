@@ -1,0 +1,66 @@
+[12:15:34 INF] WebDriverFactory.CreateWebDriver: requested browser='Chrome', timeout=3s
+[12:15:34 INF] WebDriverFactory.CreateChromeDriver: initializing Chrome with timeout=3s
+[12:15:36 INF] WebDriverFactory.CreateChromeDriver: driver created. PageLoad=3s, ImplicitWait=3s
+[12:15:36 DBG] FlightBookingService.ctor: initializing with driver=OpenQA.Selenium.Chrome.ChromeDriver
+[12:15:36 DBG] BasePage: created page object FlightBookingPage with driver session
+[12:15:36 DBG] FlightBookingService.ctor: navigating to FlightBookingPage
+[12:15:36 INF] GoToFlightBookingPage: opening hub page...
+[12:15:36 INF] Navigate To BaseUrl: https://testerbud.com/practice-page-selection
+[12:15:38 DBG] Navigation Success: https://testerbud.com/practice-page-selection
+[12:15:38 INF] GoToFlightBookingPage: clicking Flight Booking link
+[12:15:38 DBG] BasePage.FindComponent: locating Link by By.CssSelector: a[href*='flight']
+[12:15:38 INF] ScrollToCenterAndClick: waiting clickable => By.CssSelector: a[href*='flight']
+[12:15:38 DBG] WaitUntilClickable: waiting for By.CssSelector: a[href*='flight'] for 5s
+[12:15:39 DBG] WaitUntilClickable: element is clickable => By.CssSelector: a[href*='flight']
+[12:15:39 DBG] ScrollToCenter: done for => By.CssSelector: a[href*='flight']
+[12:15:39 INF] ScrollToCenterAndClick: clicked => By.CssSelector: a[href*='flight']
+[12:15:39 INF] GoToFlightBookingPage: navigation success, returning FlightBookingPage
+[12:15:39 DBG] BasePage: created page object FlightBookingPage with driver session
+[12:15:39 DBG] FlightBookingService.ctor: initialized
+[12:15:39 DBG] BasePage: created page object PaymentModal with driver session
+[12:15:39 DBG] SearchOneWayWithoutDepartureDate: from=New York, to=London
+[12:15:39 INF] GoToFlightBookingPage: opening hub page...
+[12:15:39 INF] Navigate To BaseUrl: https://testerbud.com/practice-page-selection
+[12:15:39 DBG] Navigation Success: https://testerbud.com/practice-page-selection
+[12:15:39 INF] GoToFlightBookingPage: clicking Flight Booking link
+[12:15:39 DBG] BasePage.FindComponent: locating Link by By.CssSelector: a[href*='flight']
+[12:15:39 INF] ScrollToCenterAndClick: waiting clickable => By.CssSelector: a[href*='flight']
+[12:15:39 DBG] WaitUntilClickable: waiting for By.CssSelector: a[href*='flight'] for 5s
+[12:15:39 DBG] WaitUntilClickable: element is clickable => By.CssSelector: a[href*='flight']
+[12:15:39 DBG] ScrollToCenter: done for => By.CssSelector: a[href*='flight']
+[12:15:39 INF] ScrollToCenterAndClick: clicked => By.CssSelector: a[href*='flight']
+[12:15:39 INF] GoToFlightBookingPage: navigation success, returning FlightBookingPage
+[12:15:39 DBG] BasePage: created page object FlightBookingPage with driver session
+[12:15:39 DBG] Setting trip type: One Way
+[12:15:39 DBG] BasePage.FindComponent: locating Checkbox by By.Id: oneWay
+[12:15:39 INF] ScrollToCenterAndClick: waiting clickable => By.Id: oneWay
+[12:15:39 DBG] WaitUntilClickable: waiting for By.Id: oneWay for 5s
+[12:15:39 DBG] WaitUntilClickable: element is clickable => By.Id: oneWay
+[12:15:39 DBG] ScrollToCenter: done for => By.Id: oneWay
+[12:15:39 INF] ScrollToCenterAndClick: clicked => By.Id: oneWay
+[12:15:39 DBG] Selecting origin city: New York
+[12:15:39 DBG] BasePage.FindComponent: locating Select by By.Id: from
+[12:15:39 INF] SelectByText: 'New York' => By.Id: from
+[12:15:39 DBG] WaitUntilClickable: waiting for By.Id: from for 5s
+[12:15:39 DBG] WaitUntilClickable: element is clickable => By.Id: from
+[12:15:39 DBG] Selecting destination city: London
+[12:15:39 DBG] BasePage.FindComponent: locating Select by By.Id: to
+[12:15:39 INF] SelectByText: 'London' => By.Id: to
+[12:15:39 DBG] WaitUntilClickable: waiting for By.Id: to for 5s
+[12:15:40 DBG] WaitUntilClickable: element is clickable => By.Id: to
+[12:15:40 DBG] Clicking Search Flights button
+[12:15:40 DBG] BasePage.FindComponent: locating Button by By.XPath: //button[contains(text(), 'Search Flights')]
+[12:15:40 INF] ScrollToCenterAndClick: waiting clickable => By.XPath: //button[contains(text(), 'Search Flights')]
+[12:15:40 DBG] WaitUntilClickable: waiting for By.XPath: //button[contains(text(), 'Search Flights')] for 5s
+[12:15:40 DBG] WaitUntilClickable: element is clickable => By.XPath: //button[contains(text(), 'Search Flights')]
+[12:15:40 DBG] ScrollToCenter: done for => By.XPath: //button[contains(text(), 'Search Flights')]
+[12:15:40 INF] ScrollToCenterAndClick: clicked => By.XPath: //button[contains(text(), 'Search Flights')]
+[12:15:40 DBG] SearchOneWayWithoutDepartureDate: search submitted
+[12:15:40 DBG] ShowsDepartureDateRequired: checking departure date required message (note: .Any() on string per original logic)
+[12:15:40 DBG] Fetching 'departure date required' validation message
+[12:15:40 DBG] BasePage.FindComponent: locating Label by By.XPath: //input[@id='departureDate']/following-sibling::small
+[12:15:40 DBG] ShowsDepartureDateRequired: result=True
+[12:15:40 DBG] GetDepartureRequiredErrorMessage: fetching text
+[12:15:40 DBG] Fetching 'departure date required' validation message
+[12:15:40 DBG] BasePage.FindComponent: locating Label by By.XPath: //input[@id='departureDate']/following-sibling::small
+[12:15:40 DBG] GetDepartureRequiredErrorMessage: value="Departure date cannot be in the past."

@@ -1,0 +1,53 @@
+[12:15:58 INF] WebDriverFactory.CreateWebDriver: requested browser='Chrome', timeout=3s
+[12:15:58 INF] WebDriverFactory.CreateChromeDriver: initializing Chrome with timeout=3s
+[12:16:00 INF] WebDriverFactory.CreateChromeDriver: driver created. PageLoad=3s, ImplicitWait=3s
+[12:16:00 DBG] FlightBookingService.ctor: initializing with driver=OpenQA.Selenium.Chrome.ChromeDriver
+[12:16:00 DBG] BasePage: created page object FlightBookingPage with driver session
+[12:16:00 DBG] FlightBookingService.ctor: navigating to FlightBookingPage
+[12:16:00 INF] GoToFlightBookingPage: opening hub page...
+[12:16:00 INF] Navigate To BaseUrl: https://testerbud.com/practice-page-selection
+[12:16:01 DBG] Navigation Success: https://testerbud.com/practice-page-selection
+[12:16:01 INF] GoToFlightBookingPage: clicking Flight Booking link
+[12:16:01 DBG] BasePage.FindComponent: locating Link by By.CssSelector: a[href*='flight']
+[12:16:01 INF] ScrollToCenterAndClick: waiting clickable => By.CssSelector: a[href*='flight']
+[12:16:01 DBG] WaitUntilClickable: waiting for By.CssSelector: a[href*='flight'] for 5s
+[12:16:02 DBG] WaitUntilClickable: element is clickable => By.CssSelector: a[href*='flight']
+[12:16:02 DBG] ScrollToCenter: done for => By.CssSelector: a[href*='flight']
+[12:16:02 INF] ScrollToCenterAndClick: clicked => By.CssSelector: a[href*='flight']
+[12:16:02 INF] GoToFlightBookingPage: navigation success, returning FlightBookingPage
+[12:16:02 DBG] BasePage: created page object FlightBookingPage with driver session
+[12:16:02 DBG] FlightBookingService.ctor: initialized
+[12:16:02 DBG] BasePage: created page object PaymentModal with driver session
+[12:16:02 DBG] SearchOneWayFlightsWithEmptyFields: submitting empty search (one-way)
+[12:16:02 DBG] Clicking Search Flights button
+[12:16:02 DBG] BasePage.FindComponent: locating Button by By.XPath: //button[contains(text(), 'Search Flights')]
+[12:16:02 INF] ScrollToCenterAndClick: waiting clickable => By.XPath: //button[contains(text(), 'Search Flights')]
+[12:16:02 DBG] WaitUntilClickable: waiting for By.XPath: //button[contains(text(), 'Search Flights')] for 5s
+[12:16:02 DBG] WaitUntilClickable: element is clickable => By.XPath: //button[contains(text(), 'Search Flights')]
+[12:16:02 DBG] ScrollToCenter: done for => By.XPath: //button[contains(text(), 'Search Flights')]
+[12:16:02 INF] ScrollToCenterAndClick: clicked => By.XPath: //button[contains(text(), 'Search Flights')]
+[12:16:02 DBG] SearchOneWayFlightsWithEmptyFields: search submitted
+[12:16:02 DBG] ShowsOriginRequired: checking origin required message (note: .Any() on string per original logic)
+[12:16:02 DBG] Fetching 'origin required' validation message
+[12:16:02 DBG] BasePage.FindComponent: locating Label by By.XPath: //select[@id='from']/following-sibling::small
+[12:16:02 DBG] ShowsOriginRequired: result=True
+[12:16:02 DBG] GetOriginRequiredErrorMessage: fetching text
+[12:16:02 DBG] Fetching 'origin required' validation message
+[12:16:02 DBG] BasePage.FindComponent: locating Label by By.XPath: //select[@id='from']/following-sibling::small
+[12:16:02 DBG] GetOriginRequiredErrorMessage: value="Please select a departure city."
+[12:16:02 DBG] ShowsDestinationRequired: checking destination required message (note: .Any() on string per original logic)
+[12:16:02 DBG] Fetching 'destination required' validation message
+[12:16:02 DBG] BasePage.FindComponent: locating Label by By.XPath: //select[@id='to']/following-sibling::small
+[12:16:02 DBG] ShowsDestinationRequired: result=True
+[12:16:02 DBG] GetDestinationRequiredErrorMessage: fetching text
+[12:16:02 DBG] Fetching 'destination required' validation message
+[12:16:02 DBG] BasePage.FindComponent: locating Label by By.XPath: //select[@id='to']/following-sibling::small
+[12:16:02 DBG] GetDestinationRequiredErrorMessage: value="Please select a destination city."
+[12:16:02 DBG] ShowsDepartureDateRequired: checking departure date required message (note: .Any() on string per original logic)
+[12:16:02 DBG] Fetching 'departure date required' validation message
+[12:16:02 DBG] BasePage.FindComponent: locating Label by By.XPath: //input[@id='departureDate']/following-sibling::small
+[12:16:03 DBG] ShowsDepartureDateRequired: result=True
+[12:16:03 DBG] GetDepartureRequiredErrorMessage: fetching text
+[12:16:03 DBG] Fetching 'departure date required' validation message
+[12:16:03 DBG] BasePage.FindComponent: locating Label by By.XPath: //input[@id='departureDate']/following-sibling::small
+[12:16:03 DBG] GetDepartureRequiredErrorMessage: value="Departure date cannot be in the past."
