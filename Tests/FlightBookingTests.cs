@@ -2,14 +2,8 @@
 using Allure.NUnit;
 using Allure.NUnit.Attributes;
 using NUnit.Framework;
-using NUnit.Framework.Interfaces;
-using OpenQA.Selenium;
 using Shouldly;
-using System.IO;
-using TesterBudAutomationFramework.Core.Config;
 using TesterBudAutomationFramework.Core.Constants;
-using TesterBudAutomationFramework.Core.Drivers;
-using TesterBudAutomationFramework.Services;
 
 namespace TesterBudAutomationFramework.Tests
 {
@@ -20,24 +14,6 @@ namespace TesterBudAutomationFramework.Tests
     [Category("UI")]
     public class FlightBookingTests : BaseTest
     {
-        private IWebDriver _driver;
-        private FlightBookingService _flightService;
-        private PaymentModalService _paymentService;
-
-        private DateTime _departureDate;
-        private DateTime _returnDate;
-
-        [SetUp]
-        public void SetUp()
-        {
-            var config = TestConfig.CurrentSetting;
-            _driver = WebDriverFactory.CreateWebDriver(config.Browser, config.PageLoadSec);
-            _flightService = new FlightBookingService(_driver);
-            _paymentService = new PaymentModalService(_driver);
-            _departureDate = DateTime.Today.AddDays(7);
-            _returnDate = DateTime.Today.AddDays(8);
-        }
-
         [Test]
         [AllureStory("Search One-Way")]
         [AllureSeverity(SeverityLevel.critical)]
@@ -188,22 +164,6 @@ namespace TesterBudAutomationFramework.Tests
             _flightService.GetDepartureRequiredErrorMessage(results).ShouldBeEquivalentTo("Departure date cannot be in the past.");
             _flightService.ShowsReturnDateRequired(results).ShouldBeTrue("Expected validation for past date (or date error).");
             _flightService.GetReturnRequiredErrorMessage(results).ShouldBeEquivalentTo("Return date must be after departure date.");
-        }
-
-        [TearDown]
-        public void AfterEach()
-        {
-            if (TestContext.CurrentContext.Result.Outcome.Status != TestStatus.Passed)
-            {
-                try
-                {
-                    var testName = TestContext.CurrentContext.Test.Name;
-                    var path = _shots.Save(_driver, testName, "teardown");
-                    AllureApi.AddAttachment(testName, "image/png", path);
-                }
-                catch { }
-            }
-            _driver.Dispose();
         }
     }
 };

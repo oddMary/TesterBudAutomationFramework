@@ -11,9 +11,8 @@ namespace TesterBudAutomationFramework.Core.Waits
     {
         public static int DefaultTimeout => TestConfig.CurrentSetting.TimeoutSec;
 
-        public static IWebElement WaitUntilVisible(this IWebDriver webDriver, By elementLocator, int timeout = 10)
+        public static IWebElement WaitUntilVisible(this IWebDriver webDriver, By elementLocator, int timeout = 5)
         {
-            Log.Debug("WaitUntilVisible: waiting for {Locator} for {Timeout}s", elementLocator, timeout);
             try
             {                
                 var wait = new WebDriverWait(webDriver, TimeSpan.FromSeconds(timeout));
@@ -38,9 +37,8 @@ namespace TesterBudAutomationFramework.Core.Waits
             }
         }
 
-        public static IWebElement WaitUntilClickable(this IWebDriver webDriver, By elementLocator, int timeout = 10)
+        public static IWebElement WaitUntilClickable(this IWebDriver webDriver, By elementLocator, int timeout = 5)
         {
-            Log.Debug("WaitUntilClickable: waiting for {Locator} for {Timeout}s", elementLocator, timeout);
             try
             {   var wait = new WebDriverWait(webDriver, TimeSpan.FromSeconds(timeout));
                 var element = wait.Until(ExpectedConditions.ElementToBeClickable(elementLocator));

@@ -1,4 +1,5 @@
 ﻿using Serilog;
+using TesterBudAutomationFramework.Core.Constants;
 
 namespace TesterBudAutomationFramework.Core.Loggers
 {
@@ -9,7 +10,7 @@ namespace TesterBudAutomationFramework.Core.Loggers
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
                 .WriteTo.Console()
-                .WriteTo.File("logs/test.log",
+                .WriteTo.File(TestConstants.LOG_PATH,
                               rollingInterval: RollingInterval.Day,
                               retainedFileCountLimit: 7)
                 .CreateLogger();

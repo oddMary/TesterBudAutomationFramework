@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using TesterBudAutomationFramework.Core.Constants;
 
 namespace TesterBudAutomationFramework.Core.Config
 {
@@ -11,7 +12,7 @@ namespace TesterBudAutomationFramework.Core.Config
         private static Settings SetupSettings()
         {
             var basePath = AppContext.BaseDirectory;
-            var path = Path.Combine(basePath, "appsettings.json");
+            var path = Path.Combine(basePath, TestConstants.JSON_FILE_NAME);
             if (!File.Exists(path))
             {
                 throw new FileNotFoundException($"File {path} is not found");

@@ -1,7 +1,9 @@
 ﻿using OpenQA.Selenium;
 using Serilog;
+using System.Threading;
 using TesterBudAutomationFramework.Core.Config;
 using TesterBudAutomationFramework.Core.Controls;
+using TesterBudAutomationFramework.Core.Waits;
 
 namespace TesterBudAutomationFramework.Pages
 {
@@ -20,8 +22,8 @@ namespace TesterBudAutomationFramework.Pages
         protected T FindComponent<T>(By locator) where T : BaseControl
         {
             Log.Debug("BasePage.FindComponent: locating {Control} by {Locator}", typeof(T).Name, locator);
-
-            var instance = Activator.CreateInstance(typeof(T), _driver, locator, TestConfig.CurrentSetting?.TimeoutSec)
+            Wait.WaitUntilVisible(_driver, locator);
+            var instance = Activator.CreateInstance(typeof(T), _driver, locator)
                 ?? throw new InvalidOperationException($"Failed to create instance of {typeof(T).Name}");
 
             return (T)instance;
@@ -31,12 +33,10 @@ namespace TesterBudAutomationFramework.Pages
         protected List<T> FindComponents<T>(By locator) where T : BaseControl
         {
             Log.Debug("BasePage.FindComponents: locating multiple {Control} by {Locator}", typeof(T).Name, locator);
-
-            var timeout = TestConfig.CurrentSetting?.TimeoutSec ?? 5;
-
+            Wait.WaitUntilVisible(_driver, locator);
             return _driver.FindElements(locator)
                 .Select(_ =>
-                    Activator.CreateInstance(typeof(T), _driver, locator, timeout) as T
+                    Activator.CreateInstance(typeof(T), _driver, locator) as T
                     ?? throw new InvalidOperationException($"Failed to create {typeof(T).Name}"))
                 .ToList();
         }

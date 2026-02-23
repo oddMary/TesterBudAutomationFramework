@@ -114,12 +114,6 @@ namespace TesterBudAutomationFramework.Pages
             return FlightInfoTextList;
         }
 
-        public List<Label> GetFlightsDateTextInfo()
-        {
-            Log.Debug("Fetching flights date info text");
-            return GetListOfAwailableFlights();
-        }
-
         public List<Label> GetDepartureFlightsDateTextInfo()
         {
             Log.Debug("Fetching flights departure date text");

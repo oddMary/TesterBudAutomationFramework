@@ -9,7 +9,7 @@ namespace TesterBudAutomationFramework.Core.Controls
         protected IWebDriver _driver;
         protected By _locator;
 
-        public BaseControl(IWebDriver driver, By locator, int timeout)
+        public BaseControl(IWebDriver driver, By locator)
         {
             _driver = driver;
             _locator = locator;
@@ -19,7 +19,6 @@ namespace TesterBudAutomationFramework.Core.Controls
 
         public void Click()
         {
-            Log.Information("Click: waiting clickable => {Locator}", _locator);
             var element = Wait.WaitUntilClickable(_driver, _locator, Wait.DefaultTimeout);
             element.Click();
             Log.Information("Click: clicked => {Locator}", _locator);
@@ -27,13 +26,11 @@ namespace TesterBudAutomationFramework.Core.Controls
 
         public void ScrollToCenterAndClick()
         {
-            Log.Information("ScrollToCenterAndClick: waiting clickable => {Locator}", _locator);
             var element = Wait.WaitUntilClickable(_driver, _locator, Wait.DefaultTimeout);
 
             try
             {
                 ScrollToCenter(_driver, element);
-                Log.Debug("ScrollToCenter: done for => {Locator}", _locator);
             }
             catch (Exception ex)
             {
@@ -45,7 +42,7 @@ namespace TesterBudAutomationFramework.Core.Controls
 
         }
 
-        public static void ScrollToCenter(IWebDriver driver, IWebElement element)
+        public void ScrollToCenter(IWebDriver driver, IWebElement element)
         {
                 var js = (IJavaScriptExecutor)driver;
                 js.ExecuteScript(@"

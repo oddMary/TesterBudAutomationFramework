@@ -7,8 +7,8 @@ namespace TesterBudAutomationFramework.Core.Controls
 {
     public class Select : BaseControl
     {
-        public Select(IWebDriver driver, By locator, int timeout)
-            : base(driver, locator, timeout) { }
+        public Select(IWebDriver driver, By locator)
+            : base(driver, locator) { }
 
         public void SelectOption(string text)
         {

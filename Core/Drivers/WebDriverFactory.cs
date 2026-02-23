@@ -1,6 +1,7 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using Serilog;
+using TesterBudAutomationFramework.Core.Constants;
 
 namespace TesterBudAutomationFramework.Core.Drivers
 {
@@ -11,7 +12,7 @@ namespace TesterBudAutomationFramework.Core.Drivers
             Log.Information("WebDriverFactory.CreateWebDriver: requested browser='{Browser}', timeout={Timeout}s", browser, timeout);
             switch (browser?.Trim().ToLowerInvariant())
             {
-                case "chrome":
+                case TestConstants.DEFAULT_BROWSER:
                     return CreateChromeDriver(timeout);
                 default:
                     Log.Error("WebDriverFactory.CreateWebDriver: unsupported browser '{Browser}'", browser);
@@ -23,14 +24,12 @@ namespace TesterBudAutomationFramework.Core.Drivers
 
         private static IWebDriver CreateChromeDriver(int timeout)
         {
-            Log.Information("WebDriverFactory.CreateChromeDriver: initializing Chrome with timeout={Timeout}s", timeout);
             var options = new ChromeOptions();
 
             try
             {
                 var driver = new ChromeDriver(options);
                 driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(timeout);
-                driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(timeout);
                 Log.Information("WebDriverFactory.CreateChromeDriver: driver created. PageLoad={PageLoad}s, ImplicitWait={ImplicitWait}s",
                                     timeout, timeout);
                 return driver;

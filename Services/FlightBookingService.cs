@@ -71,7 +71,6 @@ namespace TesterBudAutomationFramework.Services
         {
             Log.Debug("SearchOneWayFlightsWithEmptyFields: submitting empty search (one-way)");
             var page = _flightBookingPage.SearchFlights();
-            Log.Debug("SearchOneWayFlightsWithEmptyFields: search submitted");
             return page;
         }
 
@@ -80,7 +79,6 @@ namespace TesterBudAutomationFramework.Services
             Log.Debug("SearchRoundWayFlightsWithEmptyFields: submitting empty search (round-way)");
             _flightBookingPage.SetTripTypeRoundWay();
             var page = _flightBookingPage.SearchFlights();
-            Log.Debug("SearchRoundWayFlightsWithEmptyFields: search submitted");
             return page;
         }
 
@@ -89,7 +87,6 @@ namespace TesterBudAutomationFramework.Services
             Log.Debug("AllFlightsMatchRoute: city={city}", city);
             var flightsInfo = _flightBookingPage.GetFlightsTextInfo();
             var count = flightsInfo?.Count ?? 0;
-            Log.Debug("AllFlightsMatchRoute: items={count}", count);
 
             if (flightsInfo == null || count == 0)
             {

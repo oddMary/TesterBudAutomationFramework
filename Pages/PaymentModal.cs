@@ -18,7 +18,6 @@ namespace TesterBudAutomationFramework.Pages
 
         public bool PaymentModalWindowAppeared()
         {
-            Log.Debug("Checking if Payment Modal window is visible");
             var isVisible = Wait.WaitUntilVisible(_driver, PaymentModalWindowLocator, Wait.DefaultTimeout).Displayed;
 
             Log.Debug("Payment Modal visibility = {isVisible}", isVisible);
@@ -42,7 +41,6 @@ namespace TesterBudAutomationFramework.Pages
 
         public FlightBookingPage SubmitPayment()
         {
-            Log.Debug("Submitting payment");
             SubmitPaymentButton.ScrollToCenterAndClick();
 
             Log.Debug("Payment submitted — navigating back to FlightBookingPage");
